@@ -64,13 +64,30 @@ public class HistoriaVarisFinals {
         } else {
             System.out.println("You decide not to take the watch. The owner returns and rewards you with an old coin.\n");
             
-            //Decision 2
+            //Decision 2.1
             System.out.println("Do you want to accept the coin? (yes/no)");
-            
+            String decision1Alt = scanner.nextLine().toLowerCase();
+            if (decision1Alt.equals("yes")){
+                hasAcceptedCoin = true;
+                System.out.println("You discover a map engraved on the coin.\n");
+
+                //Decision 2.1.1
+                System.out.println("Do you want to follow the map? (yes/no)");
+                String decision2Alt = scanner.nextLine().toLowerCase();
+                if (decision2Alt.equals("yes")){
+                    hasFollowedMap = true;
+                    finalEnding = "Adventurous";
+                    System.out.println("You follow the map and find a hidden treasure. ADVENTUROUS ENDING!");
+                } else {
+                    finalEnding = "Neutral";
+                    System.out.println("You decide not to follow the map and keep the coin, staying curious. NEUTRAL ENDING!");
+                }
+            } else {
+                finalEnding = "NEW BEGINNING";
+                System.out.println("You politely decline the coin and the shop owner asks you to be his apprentice. NEW BEGINNING ENDING!");
+            }
 
         }
-        
-        
         
         // Results of the story
         System.out.println("\n--- Summary of your adventure ---\n");
