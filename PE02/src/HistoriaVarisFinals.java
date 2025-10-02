@@ -109,6 +109,10 @@ public class HistoriaVarisFinals {
             }
         }
 
+        if (hasConfessed && hasAskedAbtMagic && hasTriedWatch) {
+        System.out.println("\nYou have achieved the best possible outcome! Congratulations!");
+}
+
         scanner.close();
     }
 }
