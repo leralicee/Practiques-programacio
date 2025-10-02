@@ -25,21 +25,21 @@ public class HistoriaVarisFinals {
         String decision0 = scanner.nextLine().toLowerCase();
         if (decision0.equals("yes")){
             hasWatch = true;
-            System.out.println("You took the watch. The owner returns and looks at you suspiciously.\n");
+            System.out.println("\nYou took the watch. The owner returns and looks at you suspiciously.");
 
             //Decision 1.1
             System.out.println("Do you want to confess to taking the watch? (yes/no)");
             String decision1 = scanner.nextLine().toLowerCase();
             if (decision1.equals("yes")){
                 hasConfessed = true;
-                System.out.println("The owner is surprised but appreciates your honesty. He tells you the watch is rumored to have magical properties.\n");
+                System.out.println("\nThe owner is surprised but appreciates your honesty. He tells you the watch is rumored to have magical properties.");
 
                 //Decision 1.1.1
                 System.out.println("Do you want to ask about the magic of the watch? (yes/no)");
                 String decision2 = scanner.nextLine().toLowerCase();
                 if (decision2.equals("yes")){
                     hasAskedAbtMagic = true;
-                    System.out.println("The owner explains that the watch can manipulate time, but only for 5 minutes.\n");
+                    System.out.println("\nThe owner explains that the watch can manipulate time, but only for 5 minutes.");
 
                     //Decision 1.1.1.1
                     System.out.println("Do you want to try using the watch's magic? (yes/no)");
@@ -62,14 +62,14 @@ public class HistoriaVarisFinals {
             }
         
         } else {
-            System.out.println("You decide not to take the watch. The owner returns and rewards you with an old coin.\n");
+            System.out.println("\nYou decide not to take the watch. The owner returns and rewards you with an old coin.");
             
             //Decision 2.1
             System.out.println("Do you want to accept the coin? (yes/no)");
             String decision1Alt = scanner.nextLine().toLowerCase();
             if (decision1Alt.equals("yes")){
                 hasAcceptedCoin = true;
-                System.out.println("You discover a map engraved on the coin.\n");
+                System.out.println("\nYou discover a map engraved on the coin.");
 
                 //Decision 2.1.1
                 System.out.println("Do you want to follow the map? (yes/no)");
@@ -90,7 +90,7 @@ public class HistoriaVarisFinals {
         }
         
         // Results of the story
-        System.out.println("\n--- Summary of your adventure ---\n");
+        System.out.println("\n\n--- Summary of your adventure ---\n");
         System.out.println("Ending obtained: " + finalEnding);
         System.out.println("Has taken the watch: " + hasWatch);
         
