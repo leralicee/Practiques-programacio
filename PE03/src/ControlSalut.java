@@ -15,6 +15,7 @@ public class ControlSalut {
         String fullName;
         int age;
         double weight, height;
+        boolean enteredData = false;
         
 
         while (program){
@@ -30,8 +31,8 @@ public class ControlSalut {
                 case 'a':
                     System.out.println("Has triat introduir dades.");
                     scanner.nextLine(); // Consumir el salt de línia pendent
-    
-                     // NOM COMPLET amb try-catch
+
+                    // NOM COMPLET
                     boolean validName = false;
                     while (!validName) {
                         try {
@@ -50,7 +51,7 @@ public class ControlSalut {
                         }
                     }
 
-                    // EDAT amb try-catch
+                    // EDAT
                     boolean validAge = false;
                     while (!validAge) {
                         try {
@@ -71,7 +72,7 @@ public class ControlSalut {
                         }
                     }
 
-                    // PES amb try-catch
+                    // PES
                     boolean validWeight = false;
                     while (!validWeight) {
                         try {
@@ -89,7 +90,7 @@ public class ControlSalut {
                         }
                     }
 
-                    // ALTURA amb try-catch
+                    // ALTURA
                     boolean validHeight = false;
                     while (!validHeight) {
                         try {
@@ -106,15 +107,49 @@ public class ControlSalut {
                             System.out.println(e.getMessage());
                         }
                     }
-
+                    enteredData = true;
                     break;
                 case 'b':
+                    if (!enteredData) {
+                        System.out.println("Error: Primer has d'introduir les dades (opció a).");
+                        break;
+                    }
+                    
                     System.out.println("Has triat modificar dades.");
-                    // Code to modify data
+                    System.out.println("1) Nom complet");
+                    System.out.println("2) Edat");
+                    System.out.println("3) Pes");
+                    System.out.println("4) Alçada");
+                    System.out.print("Quina dada vols modificar? (1-4): ");
 
-
+                    try {
+                        int modifyChoice = Integer.parseInt(scanner.nextLine().trim()); //S'agafa com a string per controlar errors i es converteix a int ja que el switch no funciona amb strings
+                        
+                        switch(modifyChoice) {
+                            case 1:
+                                // Modificar nom
+                                break;
+                            case 2:
+                                // Modificar edat
+                                break;
+                            case 3:
+                                // Modificar pes
+                                break;
+                            case 4:
+                                // Modificar alçada
+                                break;
+                            default:
+                                System.out.println("Error: Opció no vàlida. Tria un número entre 1 i 4.");
+                        }
+                    }catch (NumberFormatException e) {
+                        System.out.println("Error: Format numèric invàlid.");
+                    }
                     break;
                 case 'c':
+                    if (!enteredData) {
+                        System.out.println("Error: Primer has d'introduir les dades (opció a).");
+                        break;
+                    }
                     System.out.println("Has triat visualitzar dades.");
                     // Code to visualize data
 
