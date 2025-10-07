@@ -50,7 +50,7 @@ public class ControlSalut {
                         }
                     }
 
-                    // AGE with try-catch
+                    // EDAT amb try-catch
                     boolean validAge = false;
                     while (!validAge) {
                         try {
@@ -71,8 +71,41 @@ public class ControlSalut {
                         }
                     }
 
+                    // PES amb try-catch
+                    boolean validWeight = false;
+                    while (!validWeight) {
+                        try {
+                            System.out.print("Pes (kg): ");
+                            String weightInput = scanner.nextLine().trim().replace(',', '.'); //Accepta . i , com a decimals
+                            weight = Double.parseDouble(weightInput);
+                            if (weight <= 0 || weight > 400) {
+                                throw new Exception("Error: El pes ha de ser un decimal positiu < 400.");
+                            }
+                            validWeight = true;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Error: Format numèric invàlid.");
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
 
-
+                    // ALTURA amb try-catch
+                    boolean validHeight = false;
+                    while (!validHeight) {
+                        try {
+                            System.out.print("Alçada (m): ");
+                            String heightInput = scanner.nextLine().trim().replace(',', '.');
+                            height = Double.parseDouble(heightInput);
+                            if (height < 0.5 || height > 2.5) {
+                                throw new Exception("Error: L'alçada ha de ser un decimal positiu entre 0.5 i 2.5 metres.");
+                            }
+                            validHeight = true;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Error: Format numèric invàlid.");
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
 
                     break;
                 case 'b':
@@ -96,5 +129,6 @@ public class ControlSalut {
             }
 
         }
+        scanner.close();
     }
 }
