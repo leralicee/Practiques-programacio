@@ -42,22 +42,50 @@ public class ControlSalut {
                                 throw new Exception("Error: El nom no pot quedar buit.");
                             }
             
-                            validName = true; // Si arriba aquí, el nom és vàlid
+                            validName = true; // Si arriba aqui nom = valid
                             System.out.println("Nom registrat correctament");
             
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
                     }
-                    break;
 
+                    // AGE with try-catch
+                    boolean validAge = false;
+                    while (!validAge) {
+                        try {
+                            System.out.print("Edat: ");
+                            String ageInput = scanner.nextLine().trim();
+                            age = Integer.parseInt(ageInput); //Si dona error vol dir que hi ha error d'entrada
+            
+                            if (age <= 0 || age > 120) {
+                                throw new Exception("Error: L'edat ha de ser un enter positiu < o = a 120.");
+                            }
+            
+                            validAge = true;
+            
+                        } catch (NumberFormatException e) {
+                            System.out.println("Error: Format numèric invàlid.");
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }
+                    }
+
+
+
+
+                    break;
                 case 'b':
                     System.out.println("Has triat modificar dades.");
                     // Code to modify data
+
+
                     break;
                 case 'c':
                     System.out.println("Has triat visualitzar dades.");
                     // Code to visualize data
+
+
                     break;
                 case 'd':
                     System.out.println("Sortint del programa.");
