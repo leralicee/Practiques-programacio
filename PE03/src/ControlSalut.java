@@ -12,9 +12,10 @@ public class ControlSalut {
         DecimalFormat df0 = new DecimalFormat("#");
         char choice;
         boolean program = true;
-        String fullName;
-        int age;
-        double weight, height;
+        String fullName = "";
+        int age = 0;
+        double weight = 0;
+        double height = 0;
         boolean enteredData = false;
         
 
@@ -214,7 +215,56 @@ public class ControlSalut {
                         break;
                     }
                     System.out.println("Has triat visualitzar dades.");
-                    // Code to visualize data
+                    // Normalitzar el NOM
+                    String normalizedName = "";
+                    String[] words = fullName.trim().split(" "); // Dividir el nom en paraules (per espais)
+                    for (int i = 0; i < words.length; i++) { // Processar cada paraula
+                        if (!words[i].isEmpty()) { // Primera lletra en majuscula, la resta en minuscula
+                            String firstLetter = words[i].substring(0, 1).toUpperCase();
+                            String restOfWord = words[i].substring(1).toLowerCase();
+                            String normalizedWord = firstLetter + restOfWord;
+                            if (normalizedName.isEmpty()) { // Afegir al resultat
+                                normalizedName = normalizedWord;
+                            } else {
+                                normalizedName = normalizedName + " " + normalizedWord;
+                            }
+                        }
+                    }
+
+                    // Càlcul IMC
+                    double imc = weight / (height * height);
+                    String IMC_category = "";
+                    if (imc < 18.5) {
+                        IMC_category = "pes baix";
+                    } else if (imc < 25) {
+                        IMC_category = "pes normal";
+                    } else if (imc < 30) {
+                        IMC_category = "sobrepès";
+                    } else {
+                        IMC_category = "obesitat";
+                    }
+
+                    // Freqüència cardíaca
+                    int fc_max = 220 - age;
+                    int fc50 = (int) Math.round(fc_max * 0.5);
+                    int fc85 = (int) Math.round(fc_max * 0.85);
+
+                    // Aigua recomanada
+                    double waterLiters = (weight * 35) / 1000.0;
+
+                    // Any de naixement
+                    int actualYear = Year.now().getValue();
+                    int birthYear = actualYear - age;
+
+                    // Mostrar resultats
+                    System.out.println("Hola, " + normalizedName + "!");
+                    System.out.println("Edat: " + age + " anys | Pes: " + df2.format(weight) + " kg | Alçada: " + df2.format(height) + " m");
+                    System.out.println("IMC: " + df2.format(imc) + " (" + IMC_category + ")");
+                    System.out.println("FC màxima estimada: " + fc_max + " bpm");
+                    System.out.println("Zona FC objectiu: " + fc50 + "-" + fc85 + " bpm");
+                    System.out.println("Aigua recomanada: " + df2.format(waterLiters) + " L/dia");
+                    System.out.println("Any de naixement aproximat: " + birthYear);
+
 
 
                     break;
