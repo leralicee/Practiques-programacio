@@ -9,7 +9,6 @@ public class ControlSalut {
         
         Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
         DecimalFormat df2 = new DecimalFormat("#.##");
-        DecimalFormat df0 = new DecimalFormat("#");
         char choice;
         boolean program = true;
         String fullName = "";
