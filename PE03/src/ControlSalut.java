@@ -1,4 +1,5 @@
 package PE03.src;
+
 import java.util.Scanner;
 import java.time.Year;
 import java.text.DecimalFormat;
@@ -11,15 +12,18 @@ public class ControlSalut {
         DecimalFormat df2 = new DecimalFormat("#.##");
         char choice;
         boolean program = true;
+
+        // Variables per emmagatzemar les dades de l'usuari
         String fullName = "";
         int age = 0;
         double weight = 0;
         double height = 0;
-        boolean enteredData = false;
+        boolean enteredData = false; // Assegurar que les dades s'han introduït abans de modificar o visualitzar
         
-
+        // Bucle principal del programa
         while (program){
-            System.out.println("--- CONTROL DE SALUT ---");
+
+            System.out.println("\n--- CONTROL DE SALUT ---");
             System.out.println("a) Introduir dades");
             System.out.println("b) Modificar dades");
             System.out.println("c) Visualitzar dades");
@@ -30,7 +34,7 @@ public class ControlSalut {
 
             switch (choice) {
                 case 'a':
-                    System.out.println("Has triat introduir dades.");
+                    System.out.println("\nHas triat introduir dades.");
 
                     // NOM COMPLET
                     boolean validName = false;
@@ -100,15 +104,18 @@ public class ControlSalut {
                             System.out.println(e.getMessage());
                         }
                     }
+
                     enteredData = true;
                     break;
+
                 case 'b':
+
                     if (!enteredData) {
                         System.out.println("Error: Primer has d'introduir les dades (opció a).");
                         break;
                     }
                     
-                    System.out.println("Has triat modificar dades.");
+                    System.out.println("\nHas triat modificar dades.");
                     System.out.println("1) Nom complet");
                     System.out.println("2) Edat");
                     System.out.println("3) Pes");
@@ -117,11 +124,13 @@ public class ControlSalut {
                     String modifyInput = scanner.nextLine().trim();
 
                     try {
-                        int modifyChoice = Integer.parseInt(modifyInput); //S'agafa com a string per controlar errors i es converteix a int ja que el switch no funciona amb strings
+                        int modifyChoice = Integer.parseInt(modifyInput); //S'agafa com a string per controlar errors i es converteix a int
                         
                         switch(modifyChoice) {
+
                             // NOM
                             case 1:
+
                                 boolean validNameMod = false;
                                 while (!validNameMod) {
                                     try {
@@ -138,8 +147,10 @@ public class ControlSalut {
                                     }
                                 }
                                 break;
+
                             // EDAT
                             case 2:
+
                                 boolean validAgeMod = false;
                                 while (!validAgeMod) {
                                     try {
@@ -159,13 +170,15 @@ public class ControlSalut {
                                     }
                                 }
                                 break;
+
                             // PES
                             case 3:
+
                                 boolean validWeightMod = false;
                                 while (!validWeightMod) {
                                     try {
                                         System.out.print("Nou pes (kg): ");
-                                        String newWeightInput = scanner.nextLine().trim().replace(',', '.'); //Accepta . i , com a decimals
+                                        String newWeightInput = scanner.nextLine().trim().replace(',', '.'); // Accepta . i , com a decimals
                                         double newWeight = Double.parseDouble(newWeightInput);
                                         if (newWeight <= 0 || newWeight > 400) {
                                             throw new Exception("Error: El pes ha de ser un decimal positiu raonable.");
@@ -180,13 +193,15 @@ public class ControlSalut {
                                     }
                                 }
                                 break;
-                            // ALTURA
+
+                            // ALÇADA
                             case 4:
+
                                 boolean validHeightMod = false;
                                 while (!validHeightMod) {
                                     try {
                                         System.out.print("Nova alçada (m): ");
-                                        String newHeightInput = scanner.nextLine().trim().replace(',', '.');
+                                        String newHeightInput = scanner.nextLine().trim().replace(',', '.'); // Accepta . i , com a decimals
                                         double newHeight = Double.parseDouble(newHeightInput);
                                         if (newHeight < 0.5 || newHeight > 2.5) {
                                             throw new Exception("Error: L'alçada ha de ser un decimal positiu entre 0.5 i 2.5 metres.");
@@ -208,12 +223,16 @@ public class ControlSalut {
                         System.out.println("Error: Format numèric invàlid.");
                     }
                     break;
+
                 case 'c':
+
                     if (!enteredData) {
                         System.out.println("Error: Primer has d'introduir les dades (opció a).");
                         break;
                     }
-                    System.out.println("Has triat visualitzar dades.");
+
+                    System.out.println("\nHas triat visualitzar dades.");
+
                     // Normalitzar el NOM
                     String normalizedName = "";
                     String[] words = fullName.trim().split(" "); // Dividir el nom en paraules (per espais)
@@ -263,16 +282,16 @@ public class ControlSalut {
                     System.out.println("Zona FC objectiu: " + fc50 + "-" + fc85 + " bpm");
                     System.out.println("Aigua recomanada: " + df2.format(waterLiters) + " L/dia");
                     System.out.println("Any de naixement aproximat: " + birthYear);
-
-
-
                     break;
+
                 case 'd':
+
                     System.out.println("Sortint del programa.");
                     program = false;
                     break;
+
                 default:
-                    System.out.println("Opcio no valida. Si us plau, tria una opcio entre a i d.");
+                    System.out.println("Opcio no valida. Tria una opcio entre a i d.");
             }
 
         }
