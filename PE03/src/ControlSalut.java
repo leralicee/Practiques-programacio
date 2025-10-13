@@ -45,7 +45,7 @@ public class ControlSalut {
                             if (fullName.isEmpty()) {
                                 throw new Exception("Error: El nom no pot quedar buit.");
                             }
-                            validName = true; // Si arriba aqui nom = valid
+                            validName = true; // Si arriba aqui nom = vàlid
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }
@@ -61,7 +61,7 @@ public class ControlSalut {
                             if (age <= 0 || age > 120) {
                                 throw new Exception("Error: L'edat ha de ser un enter positiu < o = a 120.");
                             }
-                            validAge = true;
+                            validAge = true; // Si arriba aqui edat = vàlid
                         } catch (NumberFormatException e) {
                             System.out.println("Error: Format numèric invàlid.");
                         } catch (Exception e) {
@@ -79,7 +79,7 @@ public class ControlSalut {
                             if (weight <= 0 || weight > 400) {
                                 throw new Exception("Error: El pes ha de ser un decimal positiu < 400.");
                             }
-                            validWeight = true;
+                            validWeight = true; // Si arriba aqui pes = vàlid
                         } catch (NumberFormatException e) {
                             System.out.println("Error: Format numèric invàlid.");
                         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class ControlSalut {
                         }
                     }
 
-                    // ALTURA
+                    // ALÇADA
                     boolean validHeight = false;
                     while (!validHeight) {
                         try {
@@ -97,7 +97,7 @@ public class ControlSalut {
                             if (height < 0.5 || height > 2.5) {
                                 throw new Exception("Error: L'alçada ha de ser un decimal positiu entre 0.5 i 2.5 metres.");
                             }
-                            validHeight = true;
+                            validHeight = true; // Si arriba aqui alçada = vàlid
                         } catch (NumberFormatException e) {
                             System.out.println("Error: Format numèric invàlid.");
                         } catch (Exception e) {
@@ -110,8 +110,8 @@ public class ControlSalut {
 
                 case 'b':
 
-                    if (!enteredData) {
-                        System.out.println("Error: Primer has d'introduir les dades (opció a).");
+                    if (!enteredData) { // No es pot modificar si no s'han introduït dades
+                        System.out.println("Error: Primer has d'introduir les dades (opció a)."); 
                         break;
                     }
                     
@@ -124,7 +124,7 @@ public class ControlSalut {
                     String modifyInput = scanner.nextLine().trim();
 
                     try {
-                        int modifyChoice = Integer.parseInt(modifyInput); //S'agafa com a string per controlar errors i es converteix a int
+                        int modifyChoice = Integer.parseInt(modifyInput); // S'agafa com a string per controlar errors i es converteix a int
                         
                         switch(modifyChoice) {
 
@@ -226,7 +226,7 @@ public class ControlSalut {
 
                 case 'c':
 
-                    if (!enteredData) {
+                    if (!enteredData) { // No es pot visualitzar si no s'han introduït dades
                         System.out.println("Error: Primer has d'introduir les dades (opció a).");
                         break;
                     }
