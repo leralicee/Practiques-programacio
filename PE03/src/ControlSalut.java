@@ -250,7 +250,7 @@ public class ControlSalut {
                     }
 
                     // Càlcul IMC
-                    double imc = weight / (height * height);
+                    double imc = weight / (Math.pow(height, 2));
                     String IMC_category = "";
                     if (imc < 18.5) {
                         IMC_category = "pes baix";
