@@ -16,7 +16,15 @@ class HouseController {
     private TemperatureController tempController;
     
     public HouseController() {
-        // Code 
+        // Create the rooms in our house
+        this.rooms = new Room[3];
+        this.rooms[0] = new Room("Living Room", 2, 2); // 2 lights, 2 windows
+        this.rooms[1] = new Room("Kitchen", 2, 1); // 2 lights, 1 window
+        this.rooms[2] = new Room("Bedroom", 2, 1); // 2 lights, 1 window
+        
+        // Create Roomba and Temperature Controller
+        this.roomba = new Roomba();
+        this.tempController = new TemperatureController();
     }
 }
 
