@@ -22,7 +22,23 @@ class HouseController {
         this.rooms[1] = new Room("Kitchen", 2, 1); // 2 lights, 1 window
         this.rooms[2] = new Room("Bedroom", 2, 1); // 2 lights, 1 window
         
-        // Create Roomba and Temperature Controller
+        // Lights and windows in living room
+        this.rooms[0].addLight(0, new Light("Main Ceiling Light"));
+        this.rooms[0].addLight(1, new Light("Reading Lamp"));
+        this.rooms[0].addWindow(0, new Window("Large Window"));
+        this.rooms[0].addWindow(1, new Window("Balcony Door"));
+        
+        // Lights and windows in kitchen
+        this.rooms[1].addLight(0, new Light("Ceiling Light"));
+        this.rooms[1].addLight(1, new Light("Under Cabinet Light"));
+        this.rooms[1].addWindow(0, new Window("Kitchen Window"));
+        
+        // Lights and windows in bedroom
+        this.rooms[2].addLight(0, new Light("Bedside Lamp"));
+        this.rooms[2].addLight(1, new Light("Main Light"));
+        this.rooms[2].addWindow(0, new Window("Bedroom Window"));
+
+        // Roomba and temperature controller
         this.roomba = new Roomba();
         this.tempController = new TemperatureController();
     }
@@ -37,6 +53,22 @@ class Room {
         this.name = name;
         this.lights = new Light[lightCount];
         this.windows = new Window[windowCount];
+    }
+
+    public String getName() {
+        return name;
+    }
+    
+    public void addLight(int position, Light light) {
+        if (position >= 0 && position < lights.length) {
+            lights[position] = light;
+        }
+    }
+    
+    public void addWindow(int position, Window window) {
+        if (position >= 0 && position < windows.length) {
+            windows[position] = window;
+        }
     }
 }
 
