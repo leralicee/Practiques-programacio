@@ -291,7 +291,7 @@ public class ControlSalut {
                     break;
 
                 default:
-                    System.out.println("Opcio no valida. Tria una opcio entre a i d.");
+                    System.out.println("Opció no valida. Tria una opció entre a i d.");
             }
 
         }
