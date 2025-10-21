@@ -32,7 +32,7 @@ public class DomoticHouse{
                     controlLights(lights);
                     break;
                 case 2:
-                    
+                    controlWindows(windows);
                     break;
                 case 3:
                     
@@ -72,14 +72,15 @@ public class DomoticHouse{
     public static int readIntInput() {
         while (true) { // In this case it breaks with return so we don't need extra variables
             try {
-                return scanner.nextInt();
-            } catch (java.util.InputMismatchException e) {
+                String inputLine = scanner.nextLine(); 
+                return Integer.parseInt(inputLine); 
+            } catch (NumberFormatException e) {
                 System.out.println("Error: Please enter a valid number.");
-                scanner.nextLine(); // Limpiar el buffer
                 System.out.print("Please try again: ");
             }
         }
     }
+
 
     public static int showMenu() {
         System.out.println("\nDomotic House Control Menu:");
@@ -93,30 +94,30 @@ public class DomoticHouse{
         return readIntInput();
     }
 
-    public static void controlLights(int[] lights) {
-        boolean lightsMenuRunning = true;
-        while (lightsMenuRunning) {
-            System.out.println("\n=== Lights Control ===");
-            System.out.println("1. Show current light settings");
-            System.out.println("2. Set light percentage for a room");
-            System.out.println("3. Set light percentage for all rooms");
+    public static void controlPercentageSystem(int[] percentages, String[] names, String systemName, String itemName) {
+        boolean menuRunning = true;
+        while (menuRunning) {
+            System.out.println("\n=== " + systemName + " Control ===");
+            System.out.println("1. Show current " + itemName + " settings");
+            System.out.println("2. Set " + itemName + " percentage for a room");
+            System.out.println("3. Set " + itemName + " percentage for all rooms");
             System.out.println("4. Back to main menu");
             System.out.print("Enter your choice (1-4): ");
             
-            int lightsChoice = readIntInput();
+            int choice = readIntInput();
             
-            switch (lightsChoice) {
+            switch (choice) {
                 case 1:
-                    showLightSettings(lights);
+                    showPercentageSettings(percentages, names, "Current " + systemName + " Settings");
                     break;
                 case 2:
-                    setLightForRoom(lights);
+                    setPercentageForRoom(percentages, names, itemName);
                     break;
                 case 3:
-                    setLightForAllRooms(lights);
+                    setPercentageForAllRooms(percentages, names, itemName);
                     break;
                 case 4:
-                    lightsMenuRunning = false;
+                    menuRunning = false;
                     break;
                 default:
                     System.out.println("Invalid choice, please try again.");
@@ -124,73 +125,69 @@ public class DomoticHouse{
         }
     }
 
-    public static void showLightSettings(int[] lights) { // Show current settings
-        System.out.println("\n=== Current Light Settings ===");
+    public static void showPercentageSettings(int[] percentages, String[] names, String title) {
+        System.out.println("\n=== " + title + " ===");
         for (int i = 0; i < NUM_ROOMS; i++) {
-            System.out.printf("%d. %s: %d%%\n", i + 1, ROOM_NAMES[i], lights[i]);
+            System.out.printf("%d. %s: %d%%\n", i + 1, names[i], percentages[i]);
         }
     }
 
-    public static void setLightForRoom(int[] lights) {
+    public static void setPercentageForRoom(int[] percentages, String[] names, String itemName) {
         try {
-            System.out.println("\n=== Set Light for Room ===");
+            System.out.println("\n=== Set " + itemName + " for Room ===");
             System.out.println("Available rooms:");
             for (int i = 0; i < NUM_ROOMS; i++) {
-                System.out.printf("%d. %s\n", i + 1, ROOM_NAMES[i]);
+                System.out.printf("%d. %s\n", i + 1, names[i]);
             }
         
             System.out.print("\nEnter room number (1-" + NUM_ROOMS + "): ");
             int roomNumber = readIntInput();
         
-            // Check if room number is valid
             if (roomNumber < 1 || roomNumber > NUM_ROOMS) {
                 throw new IllegalArgumentException("Invalid room number. Please enter a number between 1 and " + NUM_ROOMS);
             }
         
-            System.out.print("Enter light percentage (0-100) for " + ROOM_NAMES[roomNumber - 1] + ": ");
+            System.out.print("Enter " + itemName + " percentage (0-100) for " + names[roomNumber - 1] + ": ");
             int percentage = readIntInput();
         
-            // Check if percentage is valid
             if (percentage < 0 || percentage > 100) {
                 throw new IllegalArgumentException("Invalid percentage. Please enter a value between 0 and 100");
             }
         
-            // Update value in array
-            lights[roomNumber - 1] = percentage;
-        
-            System.out.println(ROOM_NAMES[roomNumber - 1] + " light set to " + percentage + "%");
+            percentages[roomNumber - 1] = percentage;
+            System.out.println(names[roomNumber - 1] + " " + itemName + " set to " + percentage + "%");
         
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
-        } catch (java.util.InputMismatchException e) {
-            System.out.println("Error: Please enter valid numeric values.");
-            scanner.nextLine();
-        } catch (Exception e) {
-            System.out.println("An unexpected error occurred: " + e.getMessage());
-            scanner.nextLine();
         }
     }
 
-    public static void setLightForAllRooms(int[] lights) {
+    public static void setPercentageForAllRooms(int[] percentages, String[] names, String itemName) {
         try {
-            System.out.println("\n=== Set Light for All Rooms ===");
-            System.out.print("Enter light percentage (0-100) for all rooms: ");
+            System.out.println("\n=== Set " + itemName + " for All Rooms ===");
+            System.out.print("Enter " + itemName + " percentage (0-100) for all rooms: ");
             int percentage = readIntInput();
         
-            // Check if % is valid
             if (percentage < 0 || percentage > 100) {
                 throw new IllegalArgumentException("Invalid percentage. Please enter a value between 0 and 100");
             }
         
-            // Update all rooms
             for (int i = 0; i < NUM_ROOMS; i++) {
-                lights[i] = percentage;
+                percentages[i] = percentage;
             }
-
-            System.out.println("All rooms light set to " + percentage + "%");
+            
+            System.out.println("All rooms " + itemName + " set to " + percentage + "%");
         
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    public static void controlLights(int[] lights) {
+        controlPercentageSystem(lights, ROOM_NAMES, "Lights", "light");
+    }
+
+    public static void controlWindows(int[] windows) {
+        controlPercentageSystem(windows, ROOM_NAMES, "Windows", "window");
     }
 }
