@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class DomoticHouse{
     
     private static Scanner scanner = new Scanner(System.in);
+    private static Random random = new Random();
 
     // Constants
     private static final int NUM_ROOMS = 5;
@@ -15,11 +16,12 @@ public class DomoticHouse{
         boolean programRunning = true;
 
         // Initialitze local variables
-        boolean[] lights = initializeLights();
-        boolean[] windows = initializeWindows();
-        boolean roombaStatus = initializeRoomba();
-        int thermostatTemp = initializeThermostat();
-        int targetTemp = 22;
+        Object[] houseData = initializeHouse();
+        int[] lights = (int[]) houseData[0];
+        int[] windows = (int[]) houseData[1];
+        boolean roombaStatus = (boolean) houseData[2];
+        int thermostatTemp = (int) houseData[3];
+        int targetTemp = (int) houseData[4];
         
         while (programRunning) {
             int choice = showMenu();
@@ -50,32 +52,20 @@ public class DomoticHouse{
         }
     }
 
-    public static boolean[] initializeLights() {
-        Random random = new Random();
-        boolean[] lights = new boolean[NUM_ROOMS];
-        for (int i = 0; i < NUM_ROOMS; i++) {
-            lights[i] = random.nextBoolean();
-        }
-        return lights;
-    }
-
-    public static boolean[] initializeWindows() {
-        Random random = new Random();
-        boolean[] windows = new boolean[NUM_ROOMS];
-        for (int i = 0; i < NUM_ROOMS; i++) {
-            windows[i] = random.nextBoolean();
-        }
-        return windows;
-    }
-
-    public static boolean initializeRoomba() {
-        Random random = new Random();
-        return random.nextBoolean();
-    }
+    public static Object[] initializeHouse() {
+        int[] lightPercentages = new int[NUM_ROOMS];
+        int[] blindPercentages = new int[NUM_ROOMS];
     
-    public static int initializeThermostat() {
-        Random random = new Random();
-        return random.nextInt(MAX_TEMP - MIN_TEMP + 1) + MIN_TEMP;
+        for (int i = 0; i < NUM_ROOMS; i++) {
+            lightPercentages[i] = random.nextInt(101);
+            blindPercentages[i] = random.nextInt(101);
+        }
+    
+        boolean roombaStatus = random.nextBoolean();
+        int thermostatTemp = random.nextInt(MAX_TEMP - MIN_TEMP + 1) + MIN_TEMP;
+        int targetTemp = 22;
+    
+        return new Object[]{lightPercentages, blindPercentages, roombaStatus, thermostatTemp, targetTemp};
     }
 
     public static int showMenu() {
