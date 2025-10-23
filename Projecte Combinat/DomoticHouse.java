@@ -38,7 +38,9 @@ public class DomoticHouse{
                     roombaStatus = controlRoomba(roombaStatus);
                     break;
                 case 4:
-                    
+                    int[] newTemps = controlThermostat(thermostatTemp, targetTemp);
+                    thermostatTemp = newTemps[0];
+                    targetTemp = newTemps[1];
                     break;
                 case 5:
                     
@@ -234,6 +236,102 @@ public class DomoticHouse{
         }
     
         return currentStatus;
+    }
+
+    public static void showThermostatStatus(int currentTemp, int targetTemp, boolean autoMode) {
+        System.out.println("\n=== Thermostat Status ===");
+        System.out.println("Current temperature: " + currentTemp + "°C");
+        System.out.println("Target temperature: " + targetTemp + "°C");
+    
+        if (autoMode) {
+            if (currentTemp < targetTemp) {
+                System.out.println("Heating: ON - Warming to " + targetTemp + "°C");
+            } else if (currentTemp > targetTemp) {
+                System.out.println("Cooling: ON - Cooling to " + targetTemp + "°C");
+            } else {
+                System.out.println("Temperature: Optimal (" + targetTemp + "°C)");
+            }
+        } else {
+            if (currentTemp < targetTemp) {
+                System.out.println("Status: " + (targetTemp - currentTemp) + "°C below target");
+            } else if (currentTemp > targetTemp) {
+                System.out.println("Status: " + (currentTemp - targetTemp) + "°C above target");
+            } else {
+                System.out.println("Temperature: At target (" + targetTemp + "°C)");
+            }
+        }
+    
+        System.out.println("Mode: " + (autoMode ? "AUTO" : "MANUAL"));
+    }
+
+    public static int setTargetTemperature(int currentTarget) {
+        try {
+            System.out.println("\n=== Set Target Temperature ===");
+            System.out.println("Current target: " + currentTarget + "°C");
+            System.out.print("Enter new target temperature (" + MIN_TEMP + "-" + MAX_TEMP + "°C): ");
+            int newTarget = readIntInput();
+        
+            if (newTarget < MIN_TEMP || newTarget > MAX_TEMP) {
+                throw new IllegalArgumentException("Temperature must be between " + MIN_TEMP + " and " + MAX_TEMP + "°C");
+            }
+        
+            System.out.println("Target temperature set to " + newTarget + "°C");
+            return newTarget;
+        
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+            return currentTarget;
+        }
+    }
+
+    public static boolean toggleAutoMode(boolean currentMode) {
+        boolean newMode = !currentMode;
+        System.out.println("\n=== Toggle Mode ===");
+        if (newMode) {
+            System.out.println("Mode changed to: AUTO");
+            System.out.println("System will automatically adjust temperature");
+        } else {
+            System.out.println("Mode changed to: MANUAL");
+            System.out.println("Temperature will remain fixed");
+        }
+        return newMode;
+    }
+
+    public static int[] controlThermostat(int currentTemp, int targetTemp) {
+        boolean thermostatMenuRunning = true;
+        int currentTemperature = currentTemp;
+        int targetTemperature = targetTemp;
+        boolean autoMode = true; // Automatic mode by default
+    
+        while (thermostatMenuRunning) {
+            System.out.println("\n=== Thermostat Control ===");
+            System.out.println("1. Show current temperature settings");
+            System.out.println("2. Set target temperature");
+            System.out.println("3. Toggle auto/manual mode");
+            System.out.println("4. Back to main menu");
+            System.out.print("Enter your choice (1-4): ");
+        
+            int thermostatChoice = readIntInput();
+        
+            switch (thermostatChoice) {
+                case 1:
+                    showThermostatStatus(currentTemperature, targetTemperature, autoMode);
+                    break;
+                case 2:
+                    targetTemperature = setTargetTemperature(targetTemperature);
+                    break;
+                case 3:
+                    autoMode = toggleAutoMode(autoMode);
+                    break;
+                case 4:
+                    thermostatMenuRunning = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice, please try again.");
+            }
+        }
+
+        return new int[]{currentTemperature, targetTemperature};
     }
 
     public static void controlLights(int[] lights) {
