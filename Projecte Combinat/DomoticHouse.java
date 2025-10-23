@@ -35,7 +35,7 @@ public class DomoticHouse{
                     controlWindows(windows);
                     break;
                 case 3:
-                    
+                    roombaStatus = controlRoomba(roombaStatus);
                     break;
                 case 4:
                     
@@ -80,7 +80,6 @@ public class DomoticHouse{
             }
         }
     }
-
 
     public static int showMenu() {
         System.out.println("\nDomotic House Control Menu:");
@@ -181,6 +180,60 @@ public class DomoticHouse{
         } catch (IllegalArgumentException e) {
             System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    public static void showRoombaStatus(boolean roombaStatus) {
+        System.out.println("\n=== Roomba Status ===");
+        if (roombaStatus) {
+            System.out.println("Status: ON - Cleaning in progress");
+        } else {
+            System.out.println("Status: OFF - Stationary at charging dock");
+        }
+    }
+
+    public static boolean controlRoomba(boolean roombaStatus) {
+        boolean roombaMenuRunning = true;
+        boolean currentStatus = roombaStatus;
+    
+        while (roombaMenuRunning) {
+            System.out.println("\n=== Roomba Control ===");
+            System.out.println("1. Show Roomba status");
+            System.out.println("2. Turn Roomba ON");
+            System.out.println("3. Turn Roomba OFF");
+            System.out.println("4. Back to main menu");
+            System.out.print("Enter your choice (1-4): ");
+        
+            int roombaChoice = readIntInput();
+        
+            switch (roombaChoice) {
+                case 1:
+                    showRoombaStatus(currentStatus);
+                    break;
+                case 2:
+                    if (currentStatus) {
+                        System.out.println("Roomba is already ON");
+                    } else {
+                        currentStatus = true;
+                        System.out.println("Roomba turned ON - Cleaning started");
+                    }
+                    break;
+                case 3:
+                    if (!currentStatus) {
+                        System.out.println("Roomba is already OFF");
+                    } else {
+                        currentStatus = false;
+                        System.out.println("Roomba turned OFF - Returning to dock");
+                    }
+                    break;
+                case 4:
+                    roombaMenuRunning = false;
+                    break;
+                default:
+                    System.out.println("Invalid choice, please try again.");
+            }
+        }
+    
+        return currentStatus;
     }
 
     public static void controlLights(int[] lights) {
