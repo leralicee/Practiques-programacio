@@ -23,6 +23,7 @@ public class DomoticHouse{
         boolean roombaStatus = (boolean) houseData[2];
         int thermostatTemp = (int) houseData[3];
         int targetTemp = (int) houseData[4];
+        boolean autoMode = true;
         
         while (programRunning) {
             int choice = showMenu();
@@ -38,12 +39,13 @@ public class DomoticHouse{
                     roombaStatus = controlRoomba(roombaStatus);
                     break;
                 case 4:
-                    int[] newTemps = controlThermostat(thermostatTemp, targetTemp);
-                    thermostatTemp = newTemps[0];
-                    targetTemp = newTemps[1];
+                    Object[] newThermostatData = controlThermostat(thermostatTemp, targetTemp, autoMode);
+                    thermostatTemp = (int) newThermostatData[0];
+                    targetTemp = (int) newThermostatData[1];
+                    autoMode = (boolean) newThermostatData[2];
                     break;
                 case 5:
-                    
+                    showHouseOverview(lights, windows, roombaStatus, thermostatTemp, targetTemp, autoMode);
                     break;
                 case 6:
                     System.out.println("Exiting the program. Goodbye!");
@@ -297,11 +299,11 @@ public class DomoticHouse{
         return newMode;
     }
 
-    public static int[] controlThermostat(int currentTemp, int targetTemp) {
+    public static Object[] controlThermostat(int currentTemp, int targetTemp, boolean autoMode) {
         boolean thermostatMenuRunning = true;
         int currentTemperature = currentTemp;
         int targetTemperature = targetTemp;
-        boolean autoMode = true; // Automatic mode by default
+        boolean currentAutoMode = autoMode;
     
         while (thermostatMenuRunning) {
             System.out.println("\n=== Thermostat Control ===");
@@ -331,7 +333,48 @@ public class DomoticHouse{
             }
         }
 
-        return new int[]{currentTemperature, targetTemperature};
+        return new Object[]{currentTemperature, targetTemperature, currentAutoMode};
+    }
+
+    public static void showHouseOverview(int[] lights, int[] windows, boolean roombaStatus, int thermostatTemp, int targetTemp, boolean autoMode) {
+        System.out.println("\n" + "=".repeat(50));
+        System.out.println("HOUSE OVERVIEW");
+        System.out.println("=".repeat(50));
+    
+        // Rooms
+        System.out.println("\nROOM STATUS:");
+        for (int i = 0; i < NUM_ROOMS; i++) {
+            System.out.printf("  %d. %s: Light %d%% | Window %d%%\n", 
+                            i + 1, ROOM_NAMES[i], lights[i], windows[i]);
+        }
+    
+        // Roomba
+        System.out.println("\nROOMBA:");
+        if (roombaStatus) {
+            System.out.println("  Status: ON - Cleaning in progress");
+        } else {
+            System.out.println("  Status: OFF - Stationary at dock");
+        }
+
+        // Thermostat
+        System.out.println("\nTHERMOSTAT:");
+        String tempStatus = "";
+        if (thermostatTemp < targetTemp) {
+            tempStatus = "Heating";
+        } else if (thermostatTemp > targetTemp) {
+            tempStatus = "Cooling";
+        } else {
+            tempStatus = "Optimal";
+        }
+    
+        System.out.printf("  Current: %d°C | Target: %d°C", thermostatTemp, targetTemp);
+        if (autoMode) {
+            System.out.printf(" (AUTO - %s)\n", tempStatus);
+        } else {
+            System.out.printf(" (MANUAL)\n");
+        }
+    
+        System.out.println("=".repeat(50));
     }
 
     public static void controlLights(int[] lights) {
