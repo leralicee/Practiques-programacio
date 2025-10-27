@@ -68,8 +68,6 @@ public class DomoticHouse{
                     printColor(BLUE, "╚════════════════════════════════════════╝");
                     programRunning = false;
                     break;
-                default:
-                    printColor(RED, "ERROR: Invalid choice. Please try again.");
             }
         }
     }
@@ -273,8 +271,6 @@ public class DomoticHouse{
                 case 4:
                     menuRunning = false;
                     break;
-                default:
-                    printColor(RED, "ERROR: Invalid choice, please try again.");
             }
         }
     }
@@ -418,8 +414,6 @@ public class DomoticHouse{
                 case 4:
                     roombaMenuRunning = false;
                     break;
-                default:
-                    printColor(RED, "ERROR: Invalid choice, please try again.");
             }
         }
     
@@ -542,8 +536,6 @@ public class DomoticHouse{
                 case 4:
                     thermostatMenuRunning = false;
                     break;
-                default:
-                    printColor(RED, "ERROR: Invalid choice, please try again.");
             }
         }
 
