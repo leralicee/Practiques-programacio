@@ -26,6 +26,10 @@ public class DomoticHouse {
     // MAIN PROGRAM FLOW
     // =========================================================================
     
+    /**
+     * Main entry point of the application
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         DomoticHouse domoticHouse = new DomoticHouse();
         domoticHouse.run();
@@ -33,6 +37,7 @@ public class DomoticHouse {
 
     /**
      * Main program execution method
+     * Controls the primary program loop and menu navigation
      */
     public void run() {
         boolean programRunning = true;
@@ -48,6 +53,11 @@ public class DomoticHouse {
         
         // Main program loop
         while (programRunning) {
+            // Simulate time passing and automatic temperature adjustment
+            if (autoMode) {
+                thermostatTemp = adjustTemperature(thermostatTemp, targetTemp);
+            }
+            
             int choice = showMenu();
 
             switch (choice) {
@@ -78,6 +88,24 @@ public class DomoticHouse {
                     break;
             }
         }
+    }
+
+    /**
+     * Automatically adjusts temperature towards target temperature
+     * @param currentTemp Current temperature
+     * @param targetTemp Target temperature
+     * @return New adjusted temperature
+     */
+    private int adjustTemperature(int currentTemp, int targetTemp) {
+        if (currentTemp < targetTemp) {
+            // Heat - increase temperature
+            return currentTemp + 1;
+        } else if (currentTemp > targetTemp) {
+            // Cool - decrease temperature
+            return currentTemp - 1;
+        }
+        // Already at target temperature
+        return currentTemp;
     }
 
     // =========================================================================
@@ -444,26 +472,39 @@ public class DomoticHouse {
         
         printColor(CYAN, "Current temperature: " + BOLD + currentTemp + "°C" + RESET);
         printColor(CYAN, "Target temperature: " + BOLD + targetTemp + "°C" + RESET);
-    
+
         if (autoMode) {
             if (currentTemp < targetTemp) {
                 printColor(GREEN, "Heating: ON - Warming to " + targetTemp + "°C");
+                printColor(GREEN, "Status: " + getTemperatureStatus(currentTemp, targetTemp));
             } else if (currentTemp > targetTemp) {
                 printColor(BLUE, "Cooling: ON - Cooling to " + targetTemp + "°C");
+                printColor(BLUE, "Status: " + getTemperatureStatus(currentTemp, targetTemp));
             } else {
                 printColor(GREEN, "Temperature: Optimal (" + targetTemp + "°C)");
             }
         } else {
-            if (currentTemp < targetTemp) {
-                printColor(YELLOW, "Status: " + (targetTemp - currentTemp) + "°C below target");
-            } else if (currentTemp > targetTemp) {
-                printColor(YELLOW, "Status: " + (currentTemp - targetTemp) + "°C above target");
-            } else {
-                printColor(GREEN, "Temperature: At target (" + targetTemp + "°C)");
-            }
+            printColor(YELLOW, "Status: " + getTemperatureStatus(currentTemp, targetTemp));
         }
-    
+
         printColor(PURPLE, "Mode: " + (autoMode ? BOLD + GREEN + "AUTO" : BOLD + YELLOW + "MANUAL") + RESET);
+    }
+
+    /**
+     * Creates a descriptive status for temperature adjustment
+     * @param current Current temperature
+     * @param target Target temperature
+     * @return String representation of the temperature status
+     */
+    private String getTemperatureStatus(int current, int target) {
+        int difference = Math.abs(current - target);
+        if (difference == 0) {
+            return GREEN + "At target temperature" + RESET;
+        } else if (current < target) {
+            return BLUE + "+" + difference + "°C to go (heating)" + RESET;
+        } else {
+            return BLUE + "-" + difference + "°C to go (cooling)" + RESET;
+        }
     }
 
     /**
@@ -588,20 +629,15 @@ public class DomoticHouse {
 
         // Thermostat
         printSection("THERMOSTAT STATUS");
-        String tempStatus = "";
-        if (thermostatTemp < targetTemp) {
-            tempStatus = "Heating";
-        } else if (thermostatTemp > targetTemp) {
-            tempStatus = "Cooling";
-        } else {
-            tempStatus = "Optimal";
-        }
+        String tempStatus = getTemperatureStatus(thermostatTemp, targetTemp);
     
         printColor(CYAN, "  Current: " + BOLD + thermostatTemp + "°C" + RESET + CYAN + " | Target: " + BOLD + targetTemp + "°C");
         if (autoMode) {
-            printColor(GREEN, "  Mode: AUTO - " + tempStatus);
+            printColor(GREEN, "  Mode: AUTO");
+            printColor(GREEN, "  " + tempStatus);
         } else {
             printColor(YELLOW, "  Mode: MANUAL");
+            printColor(YELLOW, "  " + tempStatus);
         }
     
         System.out.println();
