@@ -1,32 +1,40 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class DomoticHouse{
+public class DomoticHouse {
     
-    private static Scanner scanner = new Scanner(System.in);
-    private static Random random = new Random();
+    private Scanner scanner = new Scanner(System.in);
+    private Random random = new Random();
 
     // Constants
-    private static final int NUM_ROOMS = 5;
-    private static final int MIN_TEMP = 15;
-    private static final int MAX_TEMP = 30;
-    private static final String[] ROOM_NAMES = {"Living Room", "Kitchen", "Bedroom", "Bathroom", "Office"};
+    private final int NUM_ROOMS = 5;
+    private final int MIN_TEMP = 15;
+    private final int MAX_TEMP = 30;
+    private final String[] ROOM_NAMES = {"Living Room", "Kitchen", "Bedroom", "Bathroom", "Office"};
     
     // Colors for console (ANSI codes)
-    private static final String RESET = "\u001B[0m";
-    private static final String GREEN = "\u001B[32m";
-    private static final String BLUE = "\u001B[34m";
-    private static final String YELLOW = "\u001B[33m";
-    private static final String CYAN = "\u001B[36m";
-    private static final String PURPLE = "\u001B[35m";
-    private static final String RED = "\u001B[31m";
-    private static final String BOLD = "\u001B[1m";
+    private final String RESET = "\u001B[0m";
+    private final String GREEN = "\u001B[32m";
+    private final String BLUE = "\u001B[34m";
+    private final String YELLOW = "\u001B[33m";
+    private final String CYAN = "\u001B[36m";
+    private final String PURPLE = "\u001B[35m";
+    private final String RED = "\u001B[31m";
+    private final String BOLD = "\u001B[1m";
     
     // =========================================================================
     // MAIN PROGRAM FLOW
     // =========================================================================
     
     public static void main(String[] args) {
+        DomoticHouse domoticHouse = new DomoticHouse();
+        domoticHouse.run();
+    }
+
+    /**
+     * Main program execution method
+     */
+    public void run() {
         boolean programRunning = true;
 
         // Initialize house with random values
@@ -80,7 +88,7 @@ public class DomoticHouse{
      * Initializes the house with random values for all systems
      * @return Object array containing: lights[], windows[], roombaStatus, thermostatTemp, targetTemp
      */
-    public static Object[] initializeHouse() {
+    public Object[] initializeHouse() {
         int[] lightPercentages = new int[NUM_ROOMS];
         int[] blindPercentages = new int[NUM_ROOMS];
     
@@ -106,7 +114,7 @@ public class DomoticHouse{
      * @param maxValue Maximum allowed value (use Integer.MAX_VALUE for no maximum)
      * @return Valid integer input within specified range
      */
-    public static int readIntInput(int minValue, int maxValue) {
+    public int readIntInput(int minValue, int maxValue) {
         while (true) {
             try {
                 System.out.print(CYAN + "> " + RESET);
@@ -130,7 +138,7 @@ public class DomoticHouse{
      * Reads and validates integer input from user without range validation
      * @return Valid integer input
      */
-    public static int readIntInput() {
+    public int readIntInput() {
         return readIntInput(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
@@ -143,7 +151,7 @@ public class DomoticHouse{
      * @param color ANSI color code
      * @param message Message to display
      */
-    public static void printColor(String color, String message) {
+    public void printColor(String color, String message) {
         System.out.println(color + message + RESET);
     }
 
@@ -151,7 +159,7 @@ public class DomoticHouse{
      * Prints a formatted header with borders
      * @param title Header title
      */
-    public static void printHeader(String title) {
+    public void printHeader(String title) {
         String border = "═".repeat(title.length() + 4);
         printColor(BLUE, "╔" + border + "╗");
         printColor(BLUE, "║  " + BOLD + title + RESET + BLUE + "  ║");
@@ -162,7 +170,7 @@ public class DomoticHouse{
      * Prints a section title with underline
      * @param title Section title
      */
-    public static void printSection(String title) {
+    public void printSection(String title) {
         printColor(CYAN, "\n" + BOLD + "> " + title + RESET);
         printColor(CYAN, "─".repeat(title.length() + 2));
     }
@@ -172,7 +180,7 @@ public class DomoticHouse{
      * @param percentage Percentage value (0-100)
      * @return String representation of the percentage bar
      */
-    public static String getPercentageBar(int percentage) {
+    public String getPercentageBar(int percentage) {
         int bars = percentage / 10;
         String bar = "█".repeat(bars);
         String empty = "░".repeat(10 - bars);
@@ -187,7 +195,7 @@ public class DomoticHouse{
      * Displays the main menu and gets user choice
      * @return User menu choice (1-6)
      */
-    public static int showMenu() {
+    public int showMenu() {
         System.out.println();
         printHeader("DOMOTIC HOUSE CONTROL");
         
@@ -213,7 +221,7 @@ public class DomoticHouse{
      * Main lights control interface
      * @param lights Array of light percentages for each room
      */
-    public static void controlLights(int[] lights) {
+    public void controlLights(int[] lights) {
         controlPercentageSystem(lights, ROOM_NAMES, "Lights", "light");
     }
 
@@ -225,7 +233,7 @@ public class DomoticHouse{
      * Main windows control interface
      * @param windows Array of window percentages for each room
      */
-    public static void controlWindows(int[] windows) {
+    public void controlWindows(int[] windows) {
         controlPercentageSystem(windows, ROOM_NAMES, "Windows", "window");
     }
 
@@ -240,7 +248,7 @@ public class DomoticHouse{
      * @param systemName Name of the system being controlled
      * @param itemName Name of the item being controlled
      */
-    public static void controlPercentageSystem(int[] percentages, String[] names, String systemName, String itemName) {
+    public void controlPercentageSystem(int[] percentages, String[] names, String systemName, String itemName) {
         boolean menuRunning = true;
         
         while (menuRunning) {
@@ -281,7 +289,7 @@ public class DomoticHouse{
      * @param names Array of room names
      * @param title Display title
      */
-    public static void showPercentageSettings(int[] percentages, String[] names, String title) {
+    public void showPercentageSettings(int[] percentages, String[] names, String title) {
         System.out.println();
         printHeader(title);
         for (int i = 0; i < NUM_ROOMS; i++) {
@@ -297,7 +305,7 @@ public class DomoticHouse{
      * @param names Array of room names
      * @param itemName Name of the item being set
      */
-    public static void setPercentageForRoom(int[] percentages, String[] names, String itemName) {
+    public void setPercentageForRoom(int[] percentages, String[] names, String itemName) {
         try {
             System.out.println();
             printHeader("SET " + itemName.toUpperCase() + " FOR ROOM");
@@ -329,7 +337,7 @@ public class DomoticHouse{
      * @param names Array of room names
      * @param itemName Name of the item being set
      */
-    public static void setPercentageForAllRooms(int[] percentages, String[] names, String itemName) {
+    public void setPercentageForAllRooms(int[] percentages, String[] names, String itemName) {
         try {
             System.out.println();
             printHeader("SET " + itemName.toUpperCase() + " FOR ALL ROOMS");
@@ -357,7 +365,7 @@ public class DomoticHouse{
      * Displays current Roomba status
      * @param roombaStatus Current Roomba status (true = ON, false = OFF)
      */
-    public static void showRoombaStatus(boolean roombaStatus) {
+    public void showRoombaStatus(boolean roombaStatus) {
         System.out.println();
         printHeader("ROOMBA STATUS");
         if (roombaStatus) {
@@ -372,7 +380,7 @@ public class DomoticHouse{
      * @param roombaStatus Current Roomba status
      * @return Updated Roomba status
      */
-    public static boolean controlRoomba(boolean roombaStatus) {
+    public boolean controlRoomba(boolean roombaStatus) {
         boolean roombaMenuRunning = true;
         boolean currentStatus = roombaStatus;
     
@@ -430,7 +438,7 @@ public class DomoticHouse{
      * @param targetTemp Target temperature
      * @param autoMode Current mode (true = AUTO, false = MANUAL)
      */
-    public static void showThermostatStatus(int currentTemp, int targetTemp, boolean autoMode) {
+    public void showThermostatStatus(int currentTemp, int targetTemp, boolean autoMode) {
         System.out.println();
         printHeader("THERMOSTAT STATUS");
         
@@ -463,7 +471,7 @@ public class DomoticHouse{
      * @param currentTarget Current target temperature
      * @return New target temperature
      */
-    public static int setTargetTemperature(int currentTarget) {
+    public int setTargetTemperature(int currentTarget) {
         System.out.println();
         printHeader("SET TARGET TEMPERATURE");
         
@@ -481,7 +489,7 @@ public class DomoticHouse{
      * @param currentMode Current mode
      * @return New mode
      */
-    public static boolean toggleAutoMode(boolean currentMode) {
+    public boolean toggleAutoMode(boolean currentMode) {
         boolean newMode = !currentMode;
         System.out.println();
         printHeader("TOGGLE MODE");
@@ -502,7 +510,7 @@ public class DomoticHouse{
      * @param autoMode Current mode
      * @return Object array containing: currentTemp, targetTemp, autoMode
      */
-    public static Object[] controlThermostat(int currentTemp, int targetTemp, boolean autoMode) {
+    public Object[] controlThermostat(int currentTemp, int targetTemp, boolean autoMode) {
         boolean thermostatMenuRunning = true;
         int currentTemperature = currentTemp;
         int targetTemperature = targetTemp;
@@ -555,7 +563,7 @@ public class DomoticHouse{
      * @param targetTemp Target temperature
      * @param autoMode Thermostat mode
      */
-    public static void showHouseOverview(int[] lights, int[] windows, boolean roombaStatus, int thermostatTemp, int targetTemp, boolean autoMode) {
+    public void showHouseOverview(int[] lights, int[] windows, boolean roombaStatus, int thermostatTemp, int targetTemp, boolean autoMode) {
         System.out.println();
         printHeader("HOUSE OVERVIEW");
     
