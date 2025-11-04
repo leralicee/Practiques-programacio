@@ -403,6 +403,50 @@ public class DomoticHouse {
         }
     }
 
+     /**
+     * Programs Roomba to start cleaning after specified time delay
+     * @param roombaStatus Current Roomba status
+     * @return Updated Roomba status
+     */
+    public boolean programRoomba(boolean roombaStatus) {
+        System.out.println();
+        printHeader("PROGRAMMING ROOMBA");
+
+        printColor(PURPLE, BOLD + "Enter the hours to start cleaning from now: " + RESET);
+        int hours = readIntInput(0, 23);
+        printColor(PURPLE, BOLD + "Enter the minutes to start cleaning from now: " + RESET);
+        int minutes = readIntInput(0, 59);
+        printColor(PURPLE, BOLD + "Enter the seconds to start cleaning from now: " + RESET);
+        int seconds = readIntInput(0, 59);
+  
+        roombaTimer(hours, minutes, seconds);
+        roombaStatus = true;
+        printColor(GREEN, "SUCCESS: Roomba started cleaning as scheduled");
+        return roombaStatus;
+    }
+
+     /**
+     * Simulates Roomba countdown timer with improved user feedback
+     * @param hours Hours until start
+     * @param minutes Minutes until start
+     * @param seconds Seconds until start
+     */
+    public void roombaTimer(int hours, int minutes, int seconds) {
+        printColor(CYAN, String.format("Roomba will start cleaning in %02d:%02d:%02d", hours, minutes, seconds));
+
+        for (int h = hours; h >= 0; h--) {
+            for (int m = (h == hours ? minutes : 59); m >= 0; m--) {
+                for (int s = (h == hours && m == minutes ? seconds : 59); s >= 0; s--) {
+                    try {
+                        Thread.sleep(10); // Simulate time passing
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Main Roomba control interface
      * @param roombaStatus Current Roomba status
@@ -420,12 +464,13 @@ public class DomoticHouse {
             printColor(YELLOW, "1. Show Roomba status");
             printColor(YELLOW, "2. Turn Roomba ON");
             printColor(YELLOW, "3. Turn Roomba OFF");
-            printColor(YELLOW, "4. Back to main menu");
+            printColor(YELLOW, "4. Program Roomba");
+            printColor(YELLOW, "5. Back to main menu");
             
             System.out.println();
-            printColor(PURPLE, BOLD + "Enter your choice (1-4): " + RESET);
+            printColor(PURPLE, BOLD + "Enter your choice (1-5): " + RESET);
         
-            int roombaChoice = readIntInput(1, 4);
+            int roombaChoice = readIntInput(1, 5);
         
             switch (roombaChoice) {
                 case 1:
@@ -448,6 +493,13 @@ public class DomoticHouse {
                     }
                     break;
                 case 4:
+                    if (currentStatus) {
+                        printColor(RED, "ERROR: Cannot program Roomba while it is ON. Please turn it OFF first.");
+                    } else {
+                        currentStatus = programRoomba(currentStatus);
+                    }
+                    break;
+                case 5:
                     roombaMenuRunning = false;
                     break;
             }
