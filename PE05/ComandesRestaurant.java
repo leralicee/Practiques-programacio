@@ -1,9 +1,19 @@
 package PE05;
+
 import java.util.Scanner;
 
 public class ComandesRestaurant {
 
+    private static final double VAT_RATE = 0.10; // IVA del 10%
     private final Scanner scanner = new Scanner(System.in);
+    private String clientName = "";
+    private String orderDetails = "";
+    private double totalWithoutVat = 0.0;
+    private double vat = 0.0;
+    private double totalWithVat = 0.0;
+    private boolean hasOrder = false;
+    private String formattedOrderDetails = "";
+
     public static void main(String[] args) {
         ComandesRestaurant restaurant = new ComandesRestaurant();
         restaurant.run();
@@ -15,13 +25,13 @@ public class ComandesRestaurant {
             int choice = showMenu();
             switch (choice) {
                 case 1:
-                    
+                    createNewOrder();
                     break;
                 case 2:
-                    
+
                     break;
                 case 3:
-                    
+                    showLastTicket();
                     break;
                 case 4:
                     System.out.println("\n------------------------------------");
@@ -49,14 +59,14 @@ public class ComandesRestaurant {
         while (true) {
             try {
                 System.out.print("> Tria una opció: ");
-                String inputLine = scanner.nextLine(); 
+                String inputLine = scanner.nextLine();
                 int value = Integer.parseInt(inputLine);
-                
+
                 if (value < minValue || value > maxValue) {
                     System.out.print("ERROR: Entra un número entre " + minValue + " i " + maxValue + ".\n");
                     continue;
                 }
-                
+
                 return value;
             } catch (NumberFormatException e) {
                 System.out.print("ERROR: Entra un número vàlid.\n");
@@ -67,5 +77,167 @@ public class ComandesRestaurant {
     public int readIntInput() {
         return readIntInput(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
-    
+
+    private String readNonEmptyString(String prompt) {
+        String input;
+        do {
+            System.out.print(prompt);
+            input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("ERROR: El camp no pot estar buit.");
+            }
+        } while (input.isEmpty());
+        return input;
+    }
+
+    private String readYesNo(String prompt) {
+        String input;
+        do {
+            System.out.print(prompt);
+            input = scanner.nextLine().trim().toLowerCase();
+            if (!input.equals("s") && !input.equals("n")) {
+                System.out.println("ERROR: Introdueix 's' o 'n'.");
+            }
+        } while (!input.equals("s") && !input.equals("n"));
+        return input;
+    }
+
+    private double readPositiveDouble(String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                String input = scanner.nextLine().trim();
+                double value = Double.parseDouble(input);
+                if (value <= 0) {
+                    System.out.println("ERROR: El preu ha de ser major que 0.");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("ERROR: Introdueix un número vàlid.");
+            }
+        }
+    }
+
+    private int readPositiveInt(String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                String input = scanner.nextLine().trim();
+                int value = Integer.parseInt(input);
+                if (value <= 0) {
+                    System.out.println("ERROR: La quantitat ha de ser major que 0.");
+                    continue;
+                }
+                return value;
+            } catch (NumberFormatException e) {
+                System.out.println("ERROR: Introdueix un número enter vàlid.");
+            }
+        }
+    }
+
+    // case 1
+    private void createNewOrder() {
+        System.out.println("\n------------------------------------");
+        System.out.println("=========== NOVA COMANDA ===========");
+        System.out.println("------------------------------------");
+
+        // 1. Pedir nombre del cliente (no vacío)
+        clientName = readNonEmptyString("> Introdueix el nom del client: ");
+
+        // Resetear variables para nueva comanda
+        orderDetails = "";
+        formattedOrderDetails = "";
+        totalWithoutVat = 0.0;
+
+        // 2. Bucle para añadir productos
+        boolean addProducts = true;
+        while (addProducts) {
+            addProductToOrder();
+
+            // Validar respuesta s/n
+            String response = readYesNo("> Vols afegir un altre producte? (s/n): ");
+            if (response.equals("n")) {
+                addProducts = false;
+            }
+        }
+
+        // 3. Calcular totales
+        calculateTotals();
+
+        // 4. Mostrar tiquet
+        System.out.println("\nS'està generant el tiquet...");
+        System.out.println("\n------------------------------------");
+        System.out.println("============== TIQUET ==============");
+        System.out.println("------------------------------------");
+        showTicket();
+
+        // 5. Marcar que hay comanda
+        hasOrder = true;
+        System.out.println("Comanda enregistrada correctament.");
+    }
+
+    private void addProductToOrder() {
+        System.out.println(); // Línea en blanco para separar
+
+        String productName = readNonEmptyString("> Introdueix el producte: ");
+        double unitPrice = readPositiveDouble("> Preu unitari (€): ");
+        int quantity = readPositiveInt("> Quantitat: ");
+
+        double subtotal = unitPrice * quantity;
+
+        // Formatear y añadir a orderDetails (formato almacenamiento)
+        String productLine = String.format("%s|%d|%.2f|%.2f",
+                productName, quantity, unitPrice, subtotal);
+        if (!orderDetails.isEmpty()) {
+            orderDetails += "\n";
+        }
+        orderDetails += productLine;
+
+        // Formatear y añadir a formattedOrderDetails (formato visualización)
+        String formattedLine = String.format("%-15s %-10d %-10.2f€ %-10.2f€%n",
+                productName, quantity, unitPrice, subtotal);
+        formattedOrderDetails += formattedLine;
+
+        // Actualizar total provisional
+        totalWithoutVat += subtotal;
+    }
+
+    private void calculateTotals() {
+        vat = totalWithoutVat * VAT_RATE;
+        totalWithVat = totalWithoutVat + vat;
+    }
+
+    private void showTicket() {
+        System.out.println("Client: " + clientName);
+        System.out.println();
+
+        // Cabecera de la tabla
+        System.out.printf("%-15s %-10s %-10s %-10s%n",
+                "Producte", "Quantitat", "Preu unit.", "Subtotal");
+        System.out.println("------------------------------------------------");
+
+        // Mostrar los productos ya formateados
+        System.out.print(formattedOrderDetails);
+
+        // Línea separadora y totales
+        System.out.println("------------------------------------------------");
+        System.out.printf("%-15s %28.2f€%n", "Total sense IVA:", totalWithoutVat);
+        System.out.printf("%-15s %28.2f€%n", "IVA (" + (int) (VAT_RATE * 100) + "%):", vat);
+        System.out.printf("%-15s %28.2f€%n", "TOTAL A PAGAR:", totalWithVat);
+        System.out.println("------------------------------------");
+    }
+
+    // case 3
+    private void showLastTicket() {
+        if (!hasOrder) {
+            System.out.println("No hi ha cap comanda enregistrada");
+            return;
+        }
+
+        System.out.println("\n----------------------------------");
+        System.out.println("=========== ÚLTIM TICKET ===========");
+        System.out.println("------------------------------------");
+        showTicket();
+    }
 }
