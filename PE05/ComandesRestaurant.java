@@ -7,12 +7,11 @@ public class ComandesRestaurant {
     private static final double VAT_RATE = 0.10; // IVA del 10%
     private final Scanner scanner = new Scanner(System.in);
     private String clientName = "";
-    private String orderDetails = "";
+    private String orderDetails = ""; // ÚNICO string para guardar la información formateada
     private double totalWithoutVat = 0.0;
     private double vat = 0.0;
     private double totalWithVat = 0.0;
     private boolean hasOrder = false;
-    private String formattedOrderDetails = "";
 
     public static void main(String[] args) {
         ComandesRestaurant restaurant = new ComandesRestaurant();
@@ -136,7 +135,9 @@ public class ComandesRestaurant {
         }
     }
 
-    // case 1
+    /**
+     * case 1
+     */
     private void createNewOrder() {
         System.out.println("\n------------------------------------");
         System.out.println("=========== NOVA COMANDA ===========");
@@ -145,10 +146,11 @@ public class ComandesRestaurant {
         // 1. Pedir nombre del cliente (no vacío)
         clientName = readNonEmptyString("> Introdueix el nom del client: ");
 
-        // Resetear variables para nueva comanda
+        // Resetear TODAS las variables para nueva comanda
         orderDetails = "";
-        formattedOrderDetails = "";
         totalWithoutVat = 0.0;
+        vat = 0.0;
+        totalWithVat = 0.0;
 
         // 2. Bucle para añadir productos
         boolean addProducts = true;
@@ -186,18 +188,10 @@ public class ComandesRestaurant {
 
         double subtotal = unitPrice * quantity;
 
-        // Formatear y añadir a orderDetails (formato almacenamiento)
-        String productLine = String.format("%s|%d|%.2f|%.2f",
-                productName, quantity, unitPrice, subtotal);
-        if (!orderDetails.isEmpty()) {
-            orderDetails += "\n";
-        }
-        orderDetails += productLine;
-
-        // Formatear y añadir a formattedOrderDetails (formato visualización)
+        // Formatear y añadir directamente a orderDetails en formato de tabla
         String formattedLine = String.format("%-15s %-10d %-10.2f€ %-10.2f€%n",
                 productName, quantity, unitPrice, subtotal);
-        formattedOrderDetails += formattedLine;
+        orderDetails += formattedLine;
 
         // Actualizar total provisional
         totalWithoutVat += subtotal;
@@ -217,8 +211,8 @@ public class ComandesRestaurant {
                 "Producte", "Quantitat", "Preu unit.", "Subtotal");
         System.out.println("------------------------------------------------");
 
-        // Mostrar los productos ya formateados
-        System.out.print(formattedOrderDetails);
+        // Mostrar los productos ya formateados (orderDetails contiene el formato de tabla)
+        System.out.print(orderDetails);
 
         // Línea separadora y totales
         System.out.println("------------------------------------------------");
@@ -236,7 +230,7 @@ public class ComandesRestaurant {
         }
 
         System.out.println("\n----------------------------------");
-        System.out.println("=========== ÚLTIM TICKET ===========");
+        System.out.println("=========== ÚLTIM TIQUET ===========");
         System.out.println("------------------------------------");
         showTicket();
     }
