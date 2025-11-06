@@ -11,6 +11,16 @@ public class ComandesRestaurant {
     // ========== CONSTANTS ==========
     private static final double VAT_RATE = 0.10; // 10% VAT rate
     
+    // ========== COLOR CODES ==========
+    private static final String RESET = "\u001B[0m";
+    private static final String PRIMARY = "\u001B[38;5;75m";
+    private static final String SECONDARY = "\u001B[38;5;110m";
+    private static final String ACCENT = "\u001B[38;5;150m";
+    private static final String WARNING = "\u001B[38;5;180m";
+    private static final String TEXT = "\u001B[38;5;250m";
+    private static final String PROMPT = "\u001B[38;5;117m";
+    private static final String HIGHLIGHT = "\u001B[38;5;228m";
+    
     // ========== SYSTEM COMPONENTS ==========
     private final Scanner scanner = new Scanner(System.in);
     
@@ -52,9 +62,9 @@ public class ComandesRestaurant {
                     showLastTicket();
                     break;
                 case 4:
-                    System.out.println("\n------------------------------------");
-                    System.out.println("========= FINS LA PROPERA! =========");
-                    System.out.println("------------------------------------");
+                    System.out.println("\n" + ACCENT + "------------------------------------" + RESET);
+                    System.out.println(ACCENT + "========= FINS LA PROPERA! =========" + RESET);
+                    System.out.println(ACCENT + "------------------------------------" + RESET);
                     programRunning = false;
                     break;
             }
@@ -68,13 +78,13 @@ public class ComandesRestaurant {
      * @return Validated user choice between 1-4
      */
     public int showMenu() {
-        System.out.println("\n------------------------------------");
-        System.out.println("==== GESTIÓ COMANDES RESTAURANT ====");
-        System.out.println("------------------------------------");
-        System.out.println("1. Crear nova comanda");
-        System.out.println("2. Actualitzar comanda anterior");
-        System.out.println("3. Visualitzar últim tiquet");
-        System.out.println("4. Sortir");
+        System.out.println("\n" + PRIMARY + "------------------------------------" + RESET);
+        System.out.println(PRIMARY + "==== GESTIÓ COMANDES RESTAURANT ====" + RESET);
+        System.out.println(PRIMARY + "------------------------------------" + RESET);
+        System.out.println(TEXT + "1. Crear nova comanda" + RESET);
+        System.out.println(TEXT + "2. Actualitzar comanda anterior" + RESET);
+        System.out.println(TEXT + "3. Visualitzar últim tiquet" + RESET);
+        System.out.println(TEXT + "4. Sortir" + RESET);
 
         return readIntInput(1, 4);
     }
@@ -88,18 +98,18 @@ public class ComandesRestaurant {
     public int readIntInput(int minValue, int maxValue) {
         while (true) {
             try {
-                System.out.print("> Tria una opció: ");
+                System.out.print(PROMPT + "> Tria una opció: " + RESET);
                 String inputLine = scanner.nextLine();
                 int value = Integer.parseInt(inputLine);
 
                 if (value < minValue || value > maxValue) {
-                    System.out.print("ERROR: Entra un número entre " + minValue + " i " + maxValue + ".\n");
+                    System.out.print(WARNING + "ERROR: Entra un número entre " + minValue + " i " + maxValue + ".\n" + RESET);
                     continue;
                 }
 
                 return value;
             } catch (NumberFormatException e) {
-                System.out.print("ERROR: Entra un número vàlid.\n");
+                System.out.print(WARNING + "ERROR: Entra un número vàlid.\n" + RESET);
             }
         }
     }
@@ -112,10 +122,10 @@ public class ComandesRestaurant {
     private String readNonEmptyString(String prompt) {
         String input;
         do {
-            System.out.print(prompt);
+            System.out.print(PROMPT + prompt + RESET);
             input = scanner.nextLine().trim();
             if (input.isEmpty()) {
-                System.out.println("ERROR: El camp no pot estar buit.");
+                System.out.println(WARNING + "ERROR: El camp no pot estar buit." + RESET);
             }
         } while (input.isEmpty());
         return input;
@@ -129,10 +139,10 @@ public class ComandesRestaurant {
     private String readYesNo(String prompt) {
         String input;
         do {
-            System.out.print(prompt);
+            System.out.print(PROMPT + prompt + RESET);
             input = scanner.nextLine().trim().toLowerCase();
             if (!input.equals("s") && !input.equals("n")) {
-                System.out.println("ERROR: Introdueix 's' o 'n'.");
+                System.out.println(WARNING + "ERROR: Introdueix 's' o 'n'." + RESET);
             }
         } while (!input.equals("s") && !input.equals("n"));
         return input;
@@ -146,16 +156,16 @@ public class ComandesRestaurant {
     private double readPositiveDouble(String prompt) {
         while (true) {
             try {
-                System.out.print(prompt);
+                System.out.print(PROMPT + prompt + RESET);
                 String input = scanner.nextLine().trim().replace(',', '.');
                 double value = Double.parseDouble(input);
                 if (value <= 0) {
-                    System.out.println("ERROR: El preu ha de ser major que 0.");
+                    System.out.println(WARNING + "ERROR: El preu ha de ser major que 0." + RESET);
                     continue;
                 }
                 return value;
             } catch (NumberFormatException e) {
-                System.out.println("ERROR: Introdueix un número decimal vàlid.");
+                System.out.println(WARNING + "ERROR: Introdueix un número decimal vàlid." + RESET);
             }
         }
     }
@@ -168,16 +178,16 @@ public class ComandesRestaurant {
     private int readPositiveInt(String prompt) {
         while (true) {
             try {
-                System.out.print(prompt);
+                System.out.print(PROMPT + prompt + RESET);
                 String input = scanner.nextLine().trim();
                 int value = Integer.parseInt(input);
                 if (value <= 0) {
-                    System.out.println("ERROR: La quantitat ha de ser major que 0.");
+                    System.out.println(WARNING + "ERROR: La quantitat ha de ser major que 0." + RESET);
                     continue;
                 }
                 return value;
             } catch (NumberFormatException e) {
-                System.out.println("ERROR: Introdueix un número enter vàlid.");
+                System.out.println(WARNING + "ERROR: Introdueix un número enter vàlid." + RESET);
             }
         }
     }
@@ -189,9 +199,9 @@ public class ComandesRestaurant {
      * Resets order state and collects customer information
      */
     private void createNewOrder() {
-        System.out.println("\n------------------------------------");
-        System.out.println("=========== NOVA COMANDA ===========");
-        System.out.println("------------------------------------");
+        System.out.println("\n" + SECONDARY + "------------------------------------" + RESET);
+        System.out.println(SECONDARY + "=========== NOVA COMANDA ===========" + RESET);
+        System.out.println(SECONDARY + "------------------------------------" + RESET);
 
         // Collect customer information
         clientName = readNonEmptyString("> Introdueix el nom del client: ");
@@ -219,13 +229,13 @@ public class ComandesRestaurant {
         calculateTotals();
 
         // Display generated ticket
-        System.out.println("\nS'està generant el tiquet...");
-        System.out.println("\n------------------------------------");
-        System.out.println("============== TIQUET ==============");
-        System.out.println("------------------------------------");
+        System.out.println(ACCENT + "\nS'està generant el tiquet..." + RESET);
+        System.out.println("\n" + HIGHLIGHT + "------------------------------------" + RESET);
+        System.out.println(HIGHLIGHT + "============== TIQUET ==============" + RESET);
+        System.out.println(HIGHLIGHT + "------------------------------------" + RESET);
         showTicket();
 
-        System.out.println("Comanda enregistrada correctament.");
+        System.out.println(ACCENT + "Comanda enregistrada correctament." + RESET);
     }
 
     /**
@@ -234,13 +244,13 @@ public class ComandesRestaurant {
      */
     private void updateOrder() {
         if (!hasOrder) {
-            System.out.println("No hi ha cap comanda enregistrada");
+            System.out.println(WARNING + "No hi ha cap comanda enregistrada" + RESET);
             return;
         }
 
-        System.out.println("\n------------------------------------");
-        System.out.println("======= ACTUALITZAR COMANDA ========");
-        System.out.println("------------------------------------");
+        System.out.println("\n" + SECONDARY + "------------------------------------" + RESET);
+        System.out.println(SECONDARY + "======= ACTUALITZAR COMANDA ========" + RESET);
+        System.out.println(SECONDARY + "------------------------------------" + RESET);
 
         // Additional products loop
         boolean addingProducts = true;
@@ -257,13 +267,13 @@ public class ComandesRestaurant {
         calculateTotals();
 
         // Display updated ticket
-        System.out.println("\nS'està actualitzant la comanda...");
-        System.out.println("\n------------------------------------");
-        System.out.println("======== TIQUET ACTUALITZAT ========");
-        System.out.println("------------------------------------");
+        System.out.println(ACCENT + "\nS'està actualitzant la comanda..." + RESET);
+        System.out.println("\n" + HIGHLIGHT + "------------------------------------" + RESET);
+        System.out.println(HIGHLIGHT + "======== TIQUET ACTUALITZAT ========" + RESET);
+        System.out.println(HIGHLIGHT + "------------------------------------" + RESET);
         showTicket();
 
-        System.out.println("Comanda actualitzada correctament.");
+        System.out.println(ACCENT + "Comanda actualitzada correctament." + RESET);
     }
 
     /**
@@ -272,13 +282,13 @@ public class ComandesRestaurant {
      */
     private void showLastTicket() {
         if (!hasOrder) {
-            System.out.println("No hi ha cap comanda enregistrada");
+            System.out.println(WARNING + "No hi ha cap comanda enregistrada" + RESET);
             return;
         }
 
-        System.out.println("\n----------------------------------");
-        System.out.println("=========== ÚLTIM TIQUET ===========");
-        System.out.println("------------------------------------");
+        System.out.println("\n" + PRIMARY + "------------------------------------" + RESET);
+        System.out.println(PRIMARY + "=========== ÚLTIM TIQUET ===========" + RESET);
+        System.out.println(PRIMARY + "------------------------------------" + RESET);
         showTicket();
     }
 
@@ -318,22 +328,22 @@ public class ComandesRestaurant {
      * Displays formatted ticket with all order details and totals
      */
     private void showTicket() {
-        System.out.println("Client: " + clientName);
+        System.out.println(TEXT + "Client: " + clientName + RESET);
         System.out.println();
 
         // Header with currency indicator
-        System.out.printf("%-15s %-10s %-12s %-10s%n",
+        System.out.printf(TEXT + "%-15s %-10s %-12s %-10s%n" + RESET,
                 "Producte", "Quantitat", "Preu unit.", "Subtotal");
-        System.out.println("-----------------------------------------------");
+        System.out.println(TEXT + "-----------------------------------------------" + RESET);
 
         // Display products (without currency symbol)
-        System.out.print(orderDetails);
+        System.out.print(TEXT + orderDetails + RESET);
 
         // Separator and totals with currency
-        System.out.println("-----------------------------------------------");
-        System.out.printf("%-15s %25.2f €%n", "Total sense IVA:", totalWithoutVat);
-        System.out.printf("%-15s %25.2f €%n", "IVA (" + (int) (VAT_RATE * 100) + "%):", vat);
-        System.out.printf("%-15s %25.2f €%n", "TOTAL A PAGAR:", totalWithVat);
-        System.out.println("-----------------------------------------------");
+        System.out.println(TEXT + "-----------------------------------------------" + RESET);
+        System.out.printf(ACCENT + "%-15s %25.2f €%n" + RESET, "Total sense IVA:", totalWithoutVat);
+        System.out.printf(ACCENT + "%-15s %25.2f €%n" + RESET, "IVA (" + (int) (VAT_RATE * 100) + "%):", vat);
+        System.out.printf(HIGHLIGHT + "%-15s %25.2f €%n" + RESET, "TOTAL A PAGAR:", totalWithVat);
+        System.out.println(TEXT + "-----------------------------------------------" + RESET);
     }
 }
