@@ -27,7 +27,7 @@ public class ComandesRestaurant {
                     createNewOrder();
                     break;
                 case 2:
-
+                    updateOrder();
                     break;
                 case 3:
                     showLastTicket();
@@ -135,9 +135,7 @@ public class ComandesRestaurant {
         }
     }
 
-    /**
-     * case 1
-     */
+    // case 1
     private void createNewOrder() {
         System.out.println("\n------------------------------------");
         System.out.println("=========== NOVA COMANDA ===========");
@@ -211,7 +209,8 @@ public class ComandesRestaurant {
                 "Producte", "Quantitat", "Preu unit.", "Subtotal");
         System.out.println("------------------------------------------------");
 
-        // Mostrar los productos ya formateados (orderDetails contiene el formato de tabla)
+        // Mostrar los productos ya formateados (orderDetails contiene el formato de
+        // tabla)
         System.out.print(orderDetails);
 
         // Línea separadora y totales
@@ -220,6 +219,41 @@ public class ComandesRestaurant {
         System.out.printf("%-15s %28.2f€%n", "IVA (" + (int) (VAT_RATE * 100) + "%):", vat);
         System.out.printf("%-15s %28.2f€%n", "TOTAL A PAGAR:", totalWithVat);
         System.out.println("------------------------------------");
+    }
+
+    // case 2
+    private void updateOrder() {
+        if (!hasOrder) {
+            System.out.println("No hi ha cap comanda enregistrada");
+            return;
+        }
+
+        System.out.println("\n------------------------------------");
+        System.out.println("======= ACTUALITZAR COMANDA ========");
+        System.out.println("------------------------------------");
+
+        // Bucle para añadir productos adicionales
+        boolean addingProducts = true;
+        while (addingProducts) {
+            addProductToOrder(); // Reutilizamos el mismo método
+
+            String response = readYesNo("> Vols afegir més productes? (s/n): ");
+            if (response.equals("n")) {
+                addingProducts = false;
+            }
+        }
+
+        // Recalcular totales
+        calculateTotals();
+
+        // Mostrar tiquet actualizado
+        System.out.println("\nS'està actualitzant la comanda...");
+        System.out.println("\n------------------------------------");
+        System.out.println("======== TIQUET ACTUALITZAT ========");
+        System.out.println("------------------------------------");
+        showTicket();
+
+        System.out.println("Comanda actualitzada correctament.");
     }
 
     // case 3
