@@ -73,10 +73,6 @@ public class ComandesRestaurant {
         }
     }
 
-    public int readIntInput() {
-        return readIntInput(Integer.MIN_VALUE, Integer.MAX_VALUE);
-    }
-
     private String readNonEmptyString(String prompt) {
         String input;
         do {
@@ -105,7 +101,7 @@ public class ComandesRestaurant {
         while (true) {
             try {
                 System.out.print(prompt);
-                String input = scanner.nextLine().trim();
+                String input = scanner.nextLine().trim().replace(',', '.');
                 double value = Double.parseDouble(input);
                 if (value <= 0) {
                     System.out.println("ERROR: El preu ha de ser major que 0.");
@@ -113,7 +109,7 @@ public class ComandesRestaurant {
                 }
                 return value;
             } catch (NumberFormatException e) {
-                System.out.println("ERROR: Introdueix un número vàlid.");
+                System.out.println("ERROR: Introdueix un número decimal vàlid.");
             }
         }
     }
@@ -141,7 +137,7 @@ public class ComandesRestaurant {
         System.out.println("=========== NOVA COMANDA ===========");
         System.out.println("------------------------------------");
 
-        // 1. Pedir nombre del cliente (no vacío)
+        // 1. Pedir nombre del cliente
         clientName = readNonEmptyString("> Introdueix el nom del client: ");
 
         // Resetear TODAS las variables para nueva comanda
@@ -155,12 +151,13 @@ public class ComandesRestaurant {
         while (addProducts) {
             addProductToOrder();
 
-            // Validar respuesta s/n
             String response = readYesNo("> Vols afegir un altre producte? (s/n): ");
             if (response.equals("n")) {
                 addProducts = false;
             }
         }
+
+        hasOrder = true;
 
         // 3. Calcular totales
         calculateTotals();
@@ -172,8 +169,6 @@ public class ComandesRestaurant {
         System.out.println("------------------------------------");
         showTicket();
 
-        // 5. Marcar que hay comanda
-        hasOrder = true;
         System.out.println("Comanda enregistrada correctament.");
     }
 
@@ -186,8 +181,8 @@ public class ComandesRestaurant {
 
         double subtotal = unitPrice * quantity;
 
-        // Formatear y añadir directamente a orderDetails en formato de tabla
-        String formattedLine = String.format("%-15s %-10d %-10.2f€ %-10.2f€%n",
+        // Quitar € de los números para mejor alineación
+        String formattedLine = String.format("%-15s %-10d %-10.2f %-10.2f%n",
                 productName, quantity, unitPrice, subtotal);
         orderDetails += formattedLine;
 
@@ -204,21 +199,20 @@ public class ComandesRestaurant {
         System.out.println("Client: " + clientName);
         System.out.println();
 
-        // Cabecera de la tabla
-        System.out.printf("%-15s %-10s %-10s %-10s%n",
+        // Cabecera con €
+        System.out.printf("%-15s %-10s %-12s %-10s%n",
                 "Producte", "Quantitat", "Preu unit.", "Subtotal");
-        System.out.println("------------------------------------------------");
+        System.out.println("-----------------------------------------------");
 
-        // Mostrar los productos ya formateados (orderDetails contiene el formato de
-        // tabla)
+        // Mostrar productos (sin €)
         System.out.print(orderDetails);
 
-        // Línea separadora y totales
-        System.out.println("------------------------------------------------");
-        System.out.printf("%-15s %28.2f€%n", "Total sense IVA:", totalWithoutVat);
-        System.out.printf("%-15s %28.2f€%n", "IVA (" + (int) (VAT_RATE * 100) + "%):", vat);
-        System.out.printf("%-15s %28.2f€%n", "TOTAL A PAGAR:", totalWithVat);
-        System.out.println("------------------------------------");
+        // Línea separadora y totales con €
+        System.out.println("-----------------------------------------------");
+        System.out.printf("%-15s %25.2f €%n", "Total sense IVA:", totalWithoutVat);
+        System.out.printf("%-15s %25.2f €%n", "IVA (" + (int) (VAT_RATE * 100) + "%):", vat);
+        System.out.printf("%-15s %25.2f €%n", "TOTAL A PAGAR:", totalWithVat);
+        System.out.println("-----------------------------------------------");
     }
 
     // case 2
