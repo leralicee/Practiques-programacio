@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class JocDeLaOca {
+public class JocOca {
     
     public final Scanner scanner = new Scanner(System.in);
     public final int MAX_JUGADORS = 4;
@@ -11,8 +11,9 @@ public class JocDeLaOca {
     public int[] tornsPenalitzacio;
     public String[] motiuPenalitzacio;
     public boolean joc = true;
+    
     public static void main(String[] args) {
-        JocDeLaOca joc = new JocDeLaOca();
+        JocOca joc = new JocOca();
         joc.iniciarJoc();
     }
 
@@ -56,7 +57,7 @@ public class JocDeLaOca {
             motiuPenalitzacio[i] = "";
         }
         nomsJugadors = organitzarOrdreJugadors();
-        System.out.println("Benvinguts al Joc de la Oca; " + String.join(", ", nomsJugadors) + "!\nComenceu a la casella 0 (Inici)");
+        System.out.println("\nBenvinguts al Joc de la Oca; " + String.join(", ", nomsJugadors) + "!\nComenceu a la casella 0 (Inici)");
     }
 
     public String[] inicialitzarTauler() {
@@ -142,30 +143,40 @@ public class JocDeLaOca {
             int resultatDaus = dausJugador(jugadorActual);
             moureJugador(jugadorActual, resultatDaus);
 
-            if (posicions[jugadorActual] == 63) {
-                System.out.println(nomsJugadors[jugadorActual] + " HA GUANYAT!");
-                joc = false;
-                break;
-            }
+            comprovarGuanyat(jugadorActual);
 
             jugadorActual = (jugadorActual + 1) % nomsJugadors.length;
             torn++;
         }
     }
 
+    public void segonTorn(int jugador) {
+        System.out.println("Has de tornar a tirar els daus");
+        
+        demanarTiro();
+        if (!joc) {
+            return;
+        }
+
+        int resultatDaus = dausJugador(jugador);
+            moureJugador(jugador, resultatDaus);
+
+        comprovarGuanyat(jugador);
+    }
+
     public void imprimirTorn(int torn, int jugadorActual) {
-        System.out.println("Torn nº: " + torn);
+        System.out.println("\nTorn nº: " + torn);
         System.out.println("Jugador: " + nomsJugadors[jugadorActual]);
         System.out.println("Posició actual: Casella " + posicions[jugadorActual]);
     }
 
     public boolean comprovarPenalitzacions(int jugador) {
         if (tornsPenalitzacio[jugador] > 0) {
-            System.out.println(nomsJugadors[jugador] + " esta a la " + motiuPenalitzacio[jugador] + ". Torns restants: " + tornsPenalitzacio[jugador]);
+            System.out.println("\n" + nomsJugadors[jugador] + " esta a la " + motiuPenalitzacio[jugador] + ". Torns restants: " + tornsPenalitzacio[jugador]);
             tornsPenalitzacio[jugador]--;
             
             if (tornsPenalitzacio[jugador] == 0) {
-                System.out.println(nomsJugadors[jugador] + " surt de la " + motiuPenalitzacio[jugador]);
+                System.out.println("\n" + nomsJugadors[jugador] + " surt de la " + motiuPenalitzacio[jugador]);
                 motiuPenalitzacio[jugador] = "";
             }
             return false;
@@ -187,7 +198,7 @@ public class JocDeLaOca {
         }
         
         if (entrada.equalsIgnoreCase("sortir")) {
-            System.out.println("Joc acabat");
+            System.out.println("\nJoc acabat");
             joc = false;
         }
     }
@@ -226,13 +237,20 @@ public class JocDeLaOca {
         if (novaPosicio > 63) {
             int excés = novaPosicio - 63;
             novaPosicio = 63 - excés;
-            System.out.println("Passes de la casella 63. Rebot a la casella " + novaPosicio + ".");
+            System.out.println("\nPasses de la casella 63. Rebot a la casella " + novaPosicio + ".");
         }
     
         posicions[jugador] = novaPosicio;
-        System.out.println("Avances fins la casella " + novaPosicio + ".");
+        System.out.println("\nAvances fins la casella " + novaPosicio + ".");
     
         processarCasellaEspecial(jugador);
+    }
+
+    public void comprovarGuanyat(int jugador){
+        if (posicions[jugador] == 63) {
+            System.out.println("\n" + nomsJugadors[jugador] + " HA GUANYAT!");
+            joc = false;
+        }
     }
 
     public void processarCasellaEspecial(int jugador) {
@@ -287,7 +305,7 @@ public class JocDeLaOca {
                 break;
             
             default:
-                System.out.println("(Casella especial sense implementar)");
+                System.out.println("Casella especial sense implementar"); //no hauria de passar
         }
     }
 
@@ -312,7 +330,7 @@ public class JocDeLaOca {
         posicions[jugador] = seguentOca;
         System.out.println("Avances fins la casella " + seguentOca + ".");
     
-        // TORNAR A TIRAR
+        segonTorn(jugador);
     }
 
     public void pont(int jugador) {
@@ -330,7 +348,7 @@ public class JocDeLaOca {
         posicions[jugador] = altrePont;
         System.out.println("Avances fins la casella " + altrePont + ".");
     
-        // TORNAR A TIRAR
+        segonTorn(jugador);
     }
 
     public void fonda(int jugador) {
@@ -362,7 +380,7 @@ public class JocDeLaOca {
         System.out.println("(Presó: no et pots moure durant 3 torns)");
         // Penalització: 3 torns
         tornsPenalitzacio[jugador] = 3;
-        motiuPenalitzacio[jugador] = "PRESÓ";
+        motiuPenalitzacio[jugador] = "PRESO";
     }
 
     public void daus45(int jugador) {
@@ -371,9 +389,9 @@ public class JocDeLaOca {
     }
 
     public void laMort(int jugador) {
-        System.out.println("(La mort: tornes al principi)");
+        System.out.println("La mort: tornes a l'inici");
         posicions[jugador] = 0;
-        System.out.println("Tornes a la casella 0 (Inici).");
+        System.out.println("Tornes a la casella 0 ");
     }
 
     public void jardiDeLaOca(int jugador) {
