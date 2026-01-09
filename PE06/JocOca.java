@@ -111,9 +111,9 @@ public class JocOca {
             primerTornFet[i] = false;
         }
         
-        System.out.println("\n" + ROSA + "╔════════════════════════════════════════╗" + RESET);
+        System.out.println("\n" + ROSA + "╔═══════════════════════════════════════╗" + RESET);
         System.out.println(ROSA + "║    " + NEGRETA + "BENVINGUTS AL JOC DE L'OCA" + RESET + ROSA + "    ║" + RESET);
-        System.out.println(ROSA + "╚════════════════════════════════════════╝" + RESET);
+        System.out.println(ROSA + "╚═══════════════════════════════════════╝" + RESET);
         System.out.println("\n" + LILA + "Jugadors: " + String.join(", ", nomsJugadors) + RESET);
         System.out.println(CYAN + "Comenceu a la casella 0 (Inici)" + RESET + "\n");
     }
@@ -609,5 +609,7 @@ public class JocOca {
         System.out.println("╝" + RESET);
         
         System.out.println();
+        
+        jocActiu = false;
     }
 }
