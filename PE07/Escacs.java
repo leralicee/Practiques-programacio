@@ -201,18 +201,73 @@ public class Escacs {
     private void processarMoviment(String moviment) {
         if (moviment == null) return; // El jugador ha abandonat
 
-        boolean movimentValid = validarMoviment(moviment);
-        if (movimentValid) {
-            historialMoviments.add(moviment);
-            tornBlanques = !tornBlanques;
-        } else {
-            System.out.println("Moviment no permès, torna-ho a intentar.");
+        if (!validarEntradaMoviment(moviment)) return; // Tornar a demanar moviment
+
+        if (!validarMoviment(moviment)) return; // Validar si el moviment és permès segons les regles
+
+        // Si tot és correcte, actualitzar historial i canviar torn
+        historialMoviments.add(moviment);
+        tornBlanques = !tornBlanques;
+    }
+
+    private boolean validarEntradaMoviment(String moviment) {
+
+        // 1. Validar format (ha de ser: lletra+nombre espai lletra+nombre)
+        String[] parts = moviment.trim().split("\\s+");
+    
+        if (parts.length != 2) {
+            System.out.println("Format incorrecte. Usa: origen destí (ex: e2 e4)");
+            return false;
         }
+
+        String origen = parts[0];
+        String desti = parts[1];
+
+        // 2. Validar que origen i destí tenen exactament 2 caràcters
+        if (origen.length() != 2 || desti.length() != 2) {
+            System.out.println("Coordenades invàlides. Cada posició ha de tenir una lletra (a-h) i un número (1-8)");
+            return false;
+        }
+
+        // 3. Validar origen
+        char columnaOrigen = origen.charAt(0);
+        char filaOrigen = origen.charAt(1);
+
+        if (columnaOrigen < 'a' || columnaOrigen > 'h') {
+            System.out.println("Columna d'origen invàlida. Ha de ser entre 'a' i 'h'");
+            return false;
+        }
+    
+        if (filaOrigen < '1' || filaOrigen > '8') {
+            System.out.println("Fila d'origen invàlida. Ha de ser entre '1' i '8'");
+            return false;
+        }
+
+        // 4. Validar destí
+        char columnaDesti = desti.charAt(0);
+        char filaDesti = desti.charAt(1);
+    
+        if (columnaDesti < 'a' || columnaDesti > 'h') {
+            System.out.println("Columna de destí invàlida. Ha de ser entre 'a' i 'h'");
+            return false;
+        }
+    
+        if (filaDesti < '1' || filaDesti > '8') {
+            System.out.println("Fila de destí invàlida. Ha de ser entre '1' i '8'");
+            return false;
+        }
+
+        // 5. Validar que origen i destí no siguin la mateixa casella
+        if (origen.equals(desti)) {
+            System.out.println("L'origen i el destí no poden ser la mateixa casella");
+            return false;
+        }
+    
+        return true;
     }
 
     private boolean validarMoviment(String moviment) {
-        // Validar moviment
-        return true; //placeholder
+        return true;
     }
 
     private void finalitzarJoc() {
@@ -220,6 +275,7 @@ public class Escacs {
         System.out.println("\n=== Fi de la partida ===");
         
         // Mostrar historial de moviments
+        // Per implementar
 
         boolean tornarAJugar = gestionarSiNo("\nVoleu tornar a jugar? ");
         
