@@ -6,9 +6,11 @@ public class Escacs {
     private char[][] tauler;
     private String jugadorBlanques;
     private String jugadorNegres;
-    private boolean jocEnCurs = true;
+    private boolean jocEnCurs;
     private boolean tornBlanques; // true = blanques, false = negres
     private List<String> historialMoviments;
+    private boolean demanarJugadors;
+    private String guanyador;
     private Scanner scanner;
     
     // Constants per les peces
@@ -33,13 +35,6 @@ public class Escacs {
         app.iniciar();
     }
 
-    public Escacs() {
-        tauler = new char[8][8];
-        historialMoviments = new ArrayList<>();
-        scanner = new Scanner(System.in);
-        tornBlanques = true; // blanques comencen
-    }
-
     public String demanarString(String missatge) {
         String input;
         do {
@@ -52,10 +47,32 @@ public class Escacs {
         return input;
     }
 
+    private boolean gestionarSiNo(String missatge) {
+        do {
+            String resposta = demanarString(missatge).toLowerCase();
+            if (resposta.equals("si") || resposta.equals("sí") || resposta.equals("s")) {
+                return true;
+            } else if (resposta.equals("no") || resposta.equals("n")) {
+                return false;
+            } else {
+                System.out.println("Resposta no vàlida, introdueix 'si' o 'no'.");
+            }
+        } while (true);
+    }
+
+    public Escacs() {
+        tauler = new char[8][8];
+        historialMoviments = new ArrayList<>();
+        scanner = new Scanner(System.in);
+        tornBlanques = true; // blanques comencen
+        jocEnCurs = true;
+        demanarJugadors = true;
+    }
+
     public void iniciar() {
-        System.out.println("=== JOC D'ESCACS ===\n");
+        System.out.println("\n=== JOC D'ESCACS ===\n");
         
-        demanarNomsJugadors();
+        if (demanarJugadors) demanarNomsJugadors();
         
         inicialitzarTauler();
         
@@ -70,7 +87,7 @@ public class Escacs {
         if (jugadorBlanques.equalsIgnoreCase(jugadorNegres)) {
             System.out.println("Els dos jugadors no poden tenir el mateix nom, introdueix noms diferents.");
             demanarNomsJugadors();
-            return;
+            return; // Evitar continuar amb noms iguals
         }
         
         System.out.println("\n" + jugadorBlanques + " jugarà amb les blanques (majúscules)");
@@ -163,14 +180,16 @@ public class Escacs {
 
     private String demanarMoviment() {
         String jugadorActual = tornBlanques ? jugadorBlanques : jugadorNegres;
-        String moviment = demanarString(jugadorActual + ", introdueix el teu moviment o 'exit' per sortir: ");
+        String moviment = demanarString(jugadorActual + ", introdueix el teu moviment (ex: e2 e4) o 'exit' per sortir: ");
         
         // Comprovar si abandona
         if (moviment.equalsIgnoreCase("exit")) {
             if (tornBlanques) {
-                System.out.println(jugadorBlanques + " ha abandonat la partida. " + jugadorNegres + " guanya!");
+                System.out.println(jugadorBlanques + " ha abandonat la partida. ");
+                guanyador = jugadorNegres;
             } else {
-                System.out.println(jugadorNegres + " ha abandonat la partida. " + jugadorBlanques + " guanya!");
+                System.out.println(jugadorNegres + " ha abandonat la partida. ");
+                guanyador = jugadorBlanques;
             }
             jocEnCurs = false;
             finalitzarJoc();
@@ -197,8 +216,38 @@ public class Escacs {
     }
 
     private void finalitzarJoc() {
+        System.out.println(guanyador + " guanya la partida!");
         System.out.println("\n=== Fi de la partida ===");
+        
         // Mostrar historial de moviments
-        // Demanar si volen tornar a jugar
+
+        boolean tornarAJugar = gestionarSiNo("\nVoleu tornar a jugar? ");
+        
+        if (tornarAJugar) {
+            boolean mantenirJugadors = gestionarSiNo("Voleu mantenir els mateixos jugadors? ");
+            
+            if (mantenirJugadors) {
+                demanarJugadors = false;
+                
+                if (!guanyador.equals(jugadorBlanques)) {
+                    String aux = jugadorBlanques;
+                    jugadorBlanques = jugadorNegres;
+                    jugadorNegres = aux;
+                }
+            } else {
+                demanarJugadors = true;
+            }
+
+            jocEnCurs = true;
+            tornBlanques = true;
+            historialMoviments.clear();
+            guanyador = null;
+            iniciar();
+
+        } else {
+            System.out.println("\nGràcies per jugar!");
+            scanner.close();
+        }
     }
+
 }
