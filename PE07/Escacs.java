@@ -267,7 +267,98 @@ public class Escacs {
     }
 
     private boolean validarMoviment(String moviment) {
+        // 1. Parsejar coordenades
+        String[] parts = moviment.trim().split("\\s+");
+        int[] origen = parsejarCoordenada(parts[0]);
+        int[] desti = parsejarCoordenada(parts[1]);
+    
+        int filaOrigen = origen[0];
+        int colOrigen = origen[1];
+        int filaDesti = desti[0];
+        int colDesti = desti[1];
+
+        // 2. Comprovar que hi ha una peça a l'origen
+        char peça = tauler[filaOrigen][colOrigen];
+        if (peça == BUIT) {
+            System.out.println("No hi ha cap peça a la posició d'origen");
+            return false;
+        }
+
+        // 3. Comprovar que la peça és del color correcte
+        if (tornBlanques && !esPeçaBlanca(peça)) {
+            System.out.println("No pots moure peces negres");
+            return false;
+        }
+
+        if (!tornBlanques && !esPeçaNegra(peça)) {
+            System.out.println("No pots moure peces blanques");
+            return false;
+        }
+
+        // 4. Comprovar que no captures una peça del mateix color
+        char peçaDesti = tauler[filaDesti][colDesti];
+        if (peçaDesti != BUIT) {
+            if ((tornBlanques && esPeçaBlanca(peçaDesti)) || (!tornBlanques && esPeçaNegra(peçaDesti))) {
+                System.out.println("No pots capturar una peça del teu propi color");
+                return false;
+            }
+        }
+
+        // 5. Validar moviment segons el tipus de peça
+        if (!esMovimentValidPerPeça(peça, filaOrigen, colOrigen, filaDesti, colDesti)) {
+            return false;
+        }
+
+        // 6. Simular el moviment per comprovar si deixa el rei en escac
+        char pecaCapturada = tauler[filaDesti][colDesti];
+        tauler[filaDesti][colDesti] = peça;
+        tauler[filaOrigen][colOrigen] = BUIT;
+    
+        boolean reiEnEscac = estaReiEnEscac(tornBlanques); // Comprovar si el rei propi està en escac després del moviment
+    
+        // Desfer el moviment temporal
+        tauler[filaOrigen][colOrigen] = peça;
+        tauler[filaDesti][colDesti] = pecaCapturada;
+    
+        if (reiEnEscac) {
+            System.out.println("Aquest moviment deixaria el teu rei en escac");
+            return false;
+        }
+    
+        // 7. Si tot és correcte, executar el moviment definitivament
+        tauler[filaDesti][colDesti] = peça;
+        tauler[filaOrigen][colOrigen] = BUIT;
+    
         return true;
+    }
+
+    // Converteix notació escacs a índexs de l'array
+    private int[] parsejarCoordenada(String coord) {
+        char columna = coord.charAt(0);
+        char fila = coord.charAt(1);
+    
+        int filaIndex = fila - '1';
+        int colIndex = columna - 'a';
+    
+        return new int[]{filaIndex, colIndex};
+    }
+
+    private boolean esPeçaBlanca(char peça) {
+        return Character.isUpperCase(peça);
+    }
+
+    private boolean esPeçaNegra(char peça) {
+        return Character.isLowerCase(peça);
+    }
+
+    private boolean esMovimentValidPerPeça(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        // Regles específiques per a cada tipus de peça
+        return true;
+    }
+
+    private boolean estaReiEnEscac(boolean blanc) {
+        // Comprovar si el rei està en escac
+        return false;
     }
 
     private void finalitzarJoc() {
