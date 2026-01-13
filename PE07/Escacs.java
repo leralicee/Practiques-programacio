@@ -65,6 +65,44 @@ public class Escacs {
     }
     
     private void inicialitzarTauler() {
+        
+        // Emplenar tot el tauler amb caselles buides
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                tauler[i][j] = BUIT;
+            }
+        }
+        
+        // Fila 1: Peces NEGRES
+        tauler[0][0] = TORRENEGRE;    // a1
+        tauler[0][1] = CAVALLNEGRE;   // b1
+        tauler[0][2] = ALFILNEGRE;    // c1
+        tauler[0][3] = REINANEGRE;    // d1
+        tauler[0][4] = REINEGRE;      // e1
+        tauler[0][5] = ALFILNEGRE;    // f1
+        tauler[0][6] = CAVALLNEGRE;   // g1
+        tauler[0][7] = TORRENEGRE;    // h1
+        
+        // Fila 2: Peons negres
+        for (int j = 0; j < 8; j++) {
+            tauler[1][j] = PEONEGRE;
+        }
+        
+        // Fila 7: Peons blancs
+        for (int j = 0; j < 8; j++) {
+            tauler[6][j] = PEOBLANC;
+        }
+        
+        // Fila 8: Peces BLANQUES
+        tauler[7][0] = TORREBLANC;    // a8
+        tauler[7][1] = CAVALLBLANC;   // b8
+        tauler[7][2] = ALFILBLANC;    // c8
+        tauler[7][3] = REINABLANC;    // d8
+        tauler[7][4] = REIBLANC;      // e8
+        tauler[7][5] = ALFILBLANC;    // f8
+        tauler[7][6] = CAVALLBLANC;   // g8
+        tauler[7][7] = TORREBLANC;    // h8
+    
     }
     
     private void bucleJoc() {
