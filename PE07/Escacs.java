@@ -6,6 +6,7 @@ public class Escacs {
     private char[][] tauler;
     private String jugadorBlanques;
     private String jugadorNegres;
+    private boolean jocEnCurs = true;
     private boolean tornBlanques; // true = blanques, false = negres
     private List<String> historialMoviments;
     private Scanner scanner;
@@ -39,6 +40,18 @@ public class Escacs {
         tornBlanques = true; // blanques comencen
     }
 
+    public String demanarString(String missatge) {
+        String input;
+        do {
+            System.out.print(missatge);
+            input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("El camp no pot estar buit.");
+            }
+        } while (input.isEmpty());
+        return input;
+    }
+
     public void iniciar() {
         System.out.println("=== JOC D'ESCACS ===\n");
         
@@ -60,7 +73,7 @@ public class Escacs {
             return;
         }
         
-        System.out.println("\n" + jugadorBlanques + " jugarà amb les blanques (Majúscules)");
+        System.out.println("\n" + jugadorBlanques + " jugarà amb les blanques (majúscules)");
         System.out.println(jugadorNegres + " jugarà amb les negres (minúscules)\n");
     }
     
@@ -104,19 +117,88 @@ public class Escacs {
         tauler[7][7] = TORREBLANC;    // h8
     
     }
+
+    private void mostrarTauler() {
+        System.out.println();
+        
+        // Mostrar coordenades de columnes (a-h)
+        System.out.print("  ");
+        for (char columna = 'a'; columna <= 'h'; columna++) {
+            System.out.print(columna + " ");
+        }
+        System.out.println();
+        
+        for (int i = 0; i < 8; i++) {
+            // Mostrar número de fila (1-8)
+            System.out.print((i + 1) + " ");
+            
+            // Mostrar contingut de cada casella
+            for (int j = 0; j < 8; j++) {
+                System.out.print(tauler[i][j] + " ");
+            }
+            
+            System.out.println();
+        }
+        
+        System.out.println();
+    }
     
     private void bucleJoc() {
+        while (jocEnCurs){
+            mostrarTorn();
+            String moviment = demanarMoviment();
+            processarMoviment(moviment);
+        }
     }
 
-    public String demanarString(String missatge) {
-        String input;
-        do {
-            System.out.print(missatge);
-            input = scanner.nextLine().trim();
-            if (input.isEmpty()) {
-                System.out.println("ERROR: El camp no pot estar buit.");
+    private void mostrarTorn() {
+        mostrarTauler();
+
+        if (tornBlanques) {
+            System.out.println("Torn de " + jugadorBlanques + " (BLANQUES)");
+        } else {
+            System.out.println("Torn de " + jugadorNegres + " (NEGRES)");
+        }
+    }
+
+    private String demanarMoviment() {
+        String jugadorActual = tornBlanques ? jugadorBlanques : jugadorNegres;
+        String moviment = demanarString(jugadorActual + ", introdueix el teu moviment o 'exit' per sortir: ");
+        
+        // Comprovar si abandona
+        if (moviment.equalsIgnoreCase("exit")) {
+            if (tornBlanques) {
+                System.out.println(jugadorBlanques + " ha abandonat la partida. " + jugadorNegres + " guanya!");
+            } else {
+                System.out.println(jugadorNegres + " ha abandonat la partida. " + jugadorBlanques + " guanya!");
             }
-        } while (input.isEmpty());
-        return input;
+            jocEnCurs = false;
+            finalitzarJoc();
+            return null;
+        }
+        return moviment;
+    }
+
+    private void processarMoviment(String moviment) {
+        if (moviment == null) return; // El jugador ha abandonat
+
+        boolean movimentValid = validarMoviment(moviment);
+        if (movimentValid) {
+            historialMoviments.add(moviment);
+            tornBlanques = !tornBlanques;
+        } else {
+            System.out.println("Moviment no permès, torna-ho a intentar.");
+        }
+    }
+
+    private boolean validarMoviment(String moviment) {
+        // Validar moviment
+        return true; //placeholder
+    }
+
+    private void finalitzarJoc() {
+        System.out.println("\n=== Fi de la partida ===");
+        // Mostrar historial de moviments
+        // Demanar si volen tornar a jugar
     }
 }
