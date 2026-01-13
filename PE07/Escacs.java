@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,17 +26,12 @@ public class Escacs {
     private static final char REINEGRE = 'k';
     
     private static final char BUIT = '.';
-    
-=======
-public class Escacs {
->>>>>>> 2248721e94918acd8b44677f1bfc22b459f0a588
+
     public static void main(String[] args) {
         Escacs app = new Escacs();
         app.iniciar();
     }
-<<<<<<< HEAD
-    
-    // Constructor
+
     public Escacs() {
         tauler = new char[8][8];
         historialMoviments = new ArrayList<>();
@@ -88,10 +82,3 @@ public class Escacs {
         return input;
     }
 }
-=======
-
-    public void iniciar() {
-        
-    }
-}
->>>>>>> 2248721e94918acd8b44677f1bfc22b459f0a588
