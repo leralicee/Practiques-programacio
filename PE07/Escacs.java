@@ -403,7 +403,18 @@ public class Escacs {
         // 7. Si tot és correcte, executar el moviment definitivament
         tauler[filaDesti][colDesti] = peça;
         tauler[filaOrigen][colOrigen] = BUIT;
-    
+
+        // 8. Comprovar promoció del peó
+        char tipusPeça = Character.toUpperCase(peça);
+        if (tipusPeça == 'P') {
+            // Peó blanc arriba a fila 0, peó negre arriba a fila 7
+            if ((tornBlanques && filaDesti == 0) || (!tornBlanques && filaDesti == 7)) {
+                char peçaPromocio = demanarPromocio(tornBlanques);
+                tauler[filaDesti][colDesti] = peçaPromocio;
+                System.out.println("Peó promocionat a " + peçaPromocio + "!");
+            }
+        }
+
         return true;
     }
 
@@ -568,7 +579,7 @@ public class Escacs {
                         }
                         
                         // Simular el moviment
-                        char pecaCapturada = tauler[filaDesti][colDesti];
+                        char peçaCapturada = tauler[filaDesti][colDesti];
                         tauler[filaDesti][colDesti] = peça;
                         tauler[filaOrigen][colOrigen] = BUIT;
                     
@@ -577,7 +588,7 @@ public class Escacs {
                     
                         // Desfer el moviment
                         tauler[filaOrigen][colOrigen] = peça;
-                        tauler[filaDesti][colDesti] = pecaCapturada;
+                        tauler[filaDesti][colDesti] = peçaCapturada;
                     
                         // Si hem trobat un moviment que treu el rei de l'escac, no és mat
                         if (!reiSegueixEnEscac) {
@@ -589,6 +600,43 @@ public class Escacs {
         }
 
         return true;
+    }
+
+    private char demanarPromocio(boolean esBlanc) {
+        System.out.println("\nPROMOCIÓ DEL PEÓ");
+        System.out.println("El teu peó ha arribat a la última fila!");
+        System.out.println("A quina peça vols promocionar?");
+        System.out.println("Q - Reina");
+        System.out.println("T - Torre");
+        System.out.println("A - Alfil");
+        System.out.println("C - Cavall");
+    
+        char peçaEscollida = ' ';
+        boolean peçaValida = false;
+
+        while (!peçaValida) {
+            String input = demanarString("Escull una peça (Q/T/A/C): ").toUpperCase();
+        
+            if (input.length() != 1) {
+                System.out.println("Introdueix només una lletra.");
+                continue;
+            }
+        
+            char lletra = input.charAt(0);
+        
+            if (lletra == 'Q' || lletra == 'T' || lletra == 'A' || lletra == 'C') {
+                if (esBlanc) {
+                    peçaEscollida = lletra;
+                } else {
+                    peçaEscollida = Character.toLowerCase(lletra);
+                }
+                peçaValida = true;
+            } else {
+                System.out.println("Opció no vàlida. Escull Q, T, A o C.");
+            }
+        }
+    
+        return peçaEscollida;
     }
 
     private boolean esMovimentValidPerPeça(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
