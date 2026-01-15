@@ -352,7 +352,116 @@ public class Escacs {
     }
 
     private boolean estaReiEnEscac(boolean colorBlanc) {
+        // 1. Trobar la posició del rei
+        char rei = colorBlanc ? REIBLANC : REINEGRE;
+        int filaRei = -1, colRei = -1;
+    
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (tauler[i][j] == rei) {
+                    filaRei = i;
+                    colRei = j;
+                    break;
+                }
+            }
+            if (filaRei != -1) break;
+        }
+    
+        // Retornar false si no es troba el rei (no hauria de passar)
+        if (filaRei == -1) {
+            return false;
+        }
+    
+        // 2. Comprovar si alguna peça enemiga pot atacar el rei
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                char peça = tauler[i][j];
+            
+                if (peça == BUIT) continue;
+            
+                boolean esPeçaEnemiga = colorBlanc ? esPeçaNegra(peça) : esPeçaBlanca(peça);
+                if (!esPeçaEnemiga) continue;
+            
+                if (potAtacar(peça, i, j, filaRei, colRei)) {
+                    return true; // El rei està en escac
+                }
+            }
+        }
+    
         return false;
+    }
+
+    private boolean potAtacar(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        char tipusPeça = Character.toUpperCase(peça);
+    
+        switch (tipusPeça) {
+            case 'P': return potAtacarPeo(peça, filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'T': return potAtacarTorre(filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'C': return potAtacarCavall(filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'A': return potAtacarAlfil(filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'Q': return potAtacarReina(filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'K': return potAtacarRei(filaOrigen, colOrigen, filaDesti, colDesti);
+            default: return false;
+        }
+    }
+
+    private boolean potAtacarPeo(char peo, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        boolean esBlanc = Character.isUpperCase(peo);
+        int direccio = esBlanc ? -1 : 1;
+    
+        // Peó només ataca en diagonal
+        if (Math.abs(colDesti - colOrigen) == 1 && filaDesti == filaOrigen + direccio) {
+            return true;
+        }
+    
+        return false;
+    }
+
+    private boolean potAtacarTorre(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        if (filaOrigen != filaDesti && colOrigen != colDesti) {
+            return false;
+        }
+
+        return camiLliure(filaOrigen, colOrigen, filaDesti, colDesti);
+    }
+
+    private boolean potAtacarCavall(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        int deltaFila = Math.abs(filaDesti - filaOrigen);
+        int deltaCol = Math.abs(colDesti - colOrigen);
+    
+        return (deltaFila == 2 && deltaCol == 1) || (deltaFila == 1 && deltaCol == 2);
+    }
+
+    private boolean potAtacarAlfil(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        int deltaFila = Math.abs(filaDesti - filaOrigen);
+        int deltaCol = Math.abs(colDesti - colOrigen);
+    
+        if (deltaFila != deltaCol) {
+            return false;
+        }
+
+        return camiLliure(filaOrigen, colOrigen, filaDesti, colDesti);
+    }
+
+    private boolean potAtacarReina(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        int deltaFila = Math.abs(filaDesti - filaOrigen);
+        int deltaCol = Math.abs(colDesti - colOrigen);
+    
+        boolean movimentTorre = (filaOrigen == filaDesti || colOrigen == colDesti);
+    boolean movimentAlfil = (deltaFila == deltaCol);
+
+        if (!movimentTorre && !movimentAlfil) {
+            return false;
+        }
+        
+        return camiLliure(filaOrigen, colOrigen, filaDesti, colDesti);
+    }
+
+    private boolean potAtacarRei(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        int deltaFila = Math.abs(filaDesti - filaOrigen);
+        int deltaCol = Math.abs(colDesti - colOrigen);
+    
+        return deltaFila <= 1 && deltaCol <= 1;
     }
 
     private boolean esMovimentValidPerPeça(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
