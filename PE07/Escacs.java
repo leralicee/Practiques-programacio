@@ -37,6 +37,17 @@ public class Escacs {
         app.iniciar();
     }
 
+    public Escacs() {
+        tauler = new char[8][8];
+        historialMoviments = new ArrayList<>();
+        pecesCapturadesBlanques = new ArrayList<>();
+        pecesCapturadesNegres = new ArrayList<>();
+        scanner = new Scanner(System.in);
+        tornBlanques = true; // blanques comencen
+        jocEnCurs = true;
+        demanarJugadors = true;
+    }
+
     public String demanarString(String missatge) {
         String input;
         do {
@@ -60,17 +71,6 @@ public class Escacs {
                 System.out.println("Resposta no vàlida, introdueix 'si' o 'no'.");
             }
         } while (true);
-    }
-
-    public Escacs() {
-        tauler = new char[8][8];
-        historialMoviments = new ArrayList<>();
-        pecesCapturadesBlanques = new ArrayList<>();
-        pecesCapturadesNegres = new ArrayList<>();
-        scanner = new Scanner(System.in);
-        tornBlanques = true; // blanques comencen
-        jocEnCurs = true;
-        demanarJugadors = true;
     }
 
     public void iniciar() {
@@ -186,13 +186,51 @@ public class Escacs {
         }
         System.out.println();
     }
+
+    private void mostrarHistorialMoviments() {
+        System.out.println("\n=== HISTORIAL DE MOVIMENTS ===");
+    
+        if (historialMoviments.isEmpty()) {
+            System.out.println("No s'han fet moviments.");
+            return;
+        }
+    
+        for (int i = 0; i < historialMoviments.size(); i++) {
+            String jugador = (i % 2 == 0) ? jugadorBlanques : jugadorNegres;
+            String color = (i % 2 == 0) ? "BLANQUES" : "NEGRES";
+            System.out.println((i + 1) + ". " + jugador + " (" + color + "): " + historialMoviments.get(i));
+        }
+    
+        System.out.println();
+    }
     
     private void bucleJoc() {
         while (jocEnCurs){
+            if (comprovarEstatPartida()) return;
+        
             mostrarTorn();
             String moviment = demanarMoviment();
             processarMoviment(moviment);
         }
+    }
+
+    private boolean comprovarEstatPartida() {
+        if (esEscacIMat(!tornBlanques)) {
+            mostrarTauler();
+            mostrarPecesCapturades();
+            guanyador = tornBlanques ? jugadorBlanques : jugadorNegres;
+            System.out.println("\nESCAC I MAT!");
+            System.out.println(guanyador + " guanya la partida!");
+            jocEnCurs = false;
+            finalitzarJoc();
+            return true;
+        }
+    
+        if (estaReiEnEscac(tornBlanques)) {
+            System.out.println("\nESCAC! El teu rei està amenaçat");
+        }
+    
+        return false;
     }
 
     private void mostrarTorn() {
@@ -501,6 +539,58 @@ public class Escacs {
         return deltaFila <= 1 && deltaCol <= 1;
     }
 
+    private boolean esEscacIMat(boolean colorBlanc) {
+        if (!estaReiEnEscac(colorBlanc)) {
+            return false;
+        }
+    
+        for (int filaOrigen = 0; filaOrigen < 8; filaOrigen++) {
+            for (int colOrigen = 0; colOrigen < 8; colOrigen++) {
+                char peça = tauler[filaOrigen][colOrigen];
+            
+                if (peça == BUIT) continue;
+            
+                boolean esPeçaDelColor = colorBlanc ? esPeçaBlanca(peça) : esPeçaNegra(peça);
+                if (!esPeçaDelColor) continue;
+            
+                for (int filaDesti = 0; filaDesti < 8; filaDesti++) {
+                    for (int colDesti = 0; colDesti < 8; colDesti++) {
+                        if (filaOrigen == filaDesti && colOrigen == colDesti) continue;
+                    
+                        char peçaDesti = tauler[filaDesti][colDesti];
+                        if (peçaDesti != BUIT) {
+                            boolean peçaDestiMateixColor = colorBlanc ? esPeçaBlanca(peçaDesti) : esPeçaNegra(peçaDesti);
+                            if (peçaDestiMateixColor) continue;
+                        }
+                    
+                        if (!esMovimentValidPerPeça(peça, filaOrigen, colOrigen, filaDesti, colDesti)) {
+                            continue;
+                        }
+                        
+                        // Simular el moviment
+                        char pecaCapturada = tauler[filaDesti][colDesti];
+                        tauler[filaDesti][colDesti] = peça;
+                        tauler[filaOrigen][colOrigen] = BUIT;
+                    
+                        // Comprovar si després d'aquest moviment el rei segueix en escac
+                        boolean reiSegueixEnEscac = estaReiEnEscac(colorBlanc);
+                    
+                        // Desfer el moviment
+                        tauler[filaOrigen][colOrigen] = peça;
+                        tauler[filaDesti][colDesti] = pecaCapturada;
+                    
+                        // Si hem trobat un moviment que treu el rei de l'escac, no és mat
+                        if (!reiSegueixEnEscac) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
     private boolean esMovimentValidPerPeça(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
         char tipusPeça = Character.toUpperCase(peça);
     
@@ -662,8 +752,10 @@ public class Escacs {
         System.out.println(guanyador + " guanya la partida!");
         System.out.println("\n=== Fi de la partida ===");
         
-        // Mostrar historial de moviments i peces capturades
-        // Per implementar
+        mostrarHistorialMoviments();
+    
+        System.out.println("=== RESUM DE PECES CAPTURADES ===");
+        mostrarPecesCapturades();
 
         boolean tornarAJugar = gestionarSiNo("\nVoleu tornar a jugar? ");
         
