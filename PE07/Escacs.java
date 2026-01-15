@@ -127,8 +127,8 @@ public class Escacs {
         tauler[7][0] = TORREBLANC;    // a8
         tauler[7][1] = CAVALLBLANC;   // b8
         tauler[7][2] = ALFILBLANC;    // c8
-        tauler[7][3] = REINABLANC;    // d8
-        tauler[7][4] = REIBLANC;      // e8
+        tauler[7][3] = REIBLANC;      // d8
+        tauler[7][4] = REINABLANC;    // e8
         tauler[7][5] = ALFILBLANC;    // f8
         tauler[7][6] = CAVALLBLANC;   // g8
         tauler[7][7] = TORREBLANC;    // h8
@@ -453,7 +453,7 @@ public class Escacs {
         if (!movimentTorre && !movimentAlfil) {
             return false;
         }
-        
+
         return camiLliure(filaOrigen, colOrigen, filaDesti, colDesti);
     }
 
