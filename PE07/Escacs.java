@@ -9,6 +9,8 @@ public class Escacs {
     private boolean jocEnCurs;
     private boolean tornBlanques; // true = blanques, false = negres
     private List<String> historialMoviments;
+    private List<Character> pecesCapturadesBlanques;
+    private List<Character> pecesCapturadesNegres;
     private boolean demanarJugadors;
     private String guanyador;
     private Scanner scanner;
@@ -63,6 +65,8 @@ public class Escacs {
     public Escacs() {
         tauler = new char[8][8];
         historialMoviments = new ArrayList<>();
+        pecesCapturadesBlanques = new ArrayList<>();
+        pecesCapturadesNegres = new ArrayList<>();
         scanner = new Scanner(System.in);
         tornBlanques = true; // blanques comencen
         jocEnCurs = true;
@@ -159,6 +163,29 @@ public class Escacs {
         
         System.out.println();
     }
+
+    private void mostrarPecesCapturades() {
+        System.out.print("Peces capturades per " + jugadorBlanques + ": ");
+        if (pecesCapturadesBlanques.isEmpty()) {
+            System.out.print("Cap");
+        } else {
+            for (char peca : pecesCapturadesBlanques) {
+                System.out.print(peca + " ");
+            }
+        }
+    
+        System.out.println();
+    
+        System.out.print("Peces capturades per " + jugadorNegres + ": ");
+        if (pecesCapturadesNegres.isEmpty()) {
+            System.out.print("Cap");
+        } else {
+            for (char peca : pecesCapturadesNegres) {
+                System.out.print(peca + " ");
+            }
+        }
+        System.out.println();
+    }
     
     private void bucleJoc() {
         while (jocEnCurs){
@@ -170,6 +197,7 @@ public class Escacs {
 
     private void mostrarTorn() {
         mostrarTauler();
+        mostrarPecesCapturades();
 
         if (tornBlanques) {
             System.out.println("Torn de " + jugadorBlanques + " (BLANQUES)");
@@ -325,6 +353,15 @@ public class Escacs {
             return false;
         }
     
+        // Guardar la peça capturada si n'hi ha
+        if (pecaCapturada != BUIT) {
+            if (tornBlanques) {
+                pecesCapturadesBlanques.add(pecaCapturada);
+            } else {
+                pecesCapturadesNegres.add(pecaCapturada);
+            }
+        }
+
         // 7. Si tot és correcte, executar el moviment definitivament
         tauler[filaDesti][colDesti] = peça;
         tauler[filaOrigen][colOrigen] = BUIT;
@@ -625,7 +662,7 @@ public class Escacs {
         System.out.println(guanyador + " guanya la partida!");
         System.out.println("\n=== Fi de la partida ===");
         
-        // Mostrar historial de moviments
+        // Mostrar historial de moviments i peces capturades
         // Per implementar
 
         boolean tornarAJugar = gestionarSiNo("\nVoleu tornar a jugar? ");
@@ -648,6 +685,8 @@ public class Escacs {
             jocEnCurs = true;
             tornBlanques = true;
             historialMoviments.clear();
+            pecesCapturadesBlanques.clear();
+            pecesCapturadesNegres.clear();
             guanyador = null;
             iniciar();
 
