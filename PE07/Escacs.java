@@ -351,14 +351,165 @@ public class Escacs {
         return Character.isLowerCase(peça);
     }
 
+    private boolean estaReiEnEscac(boolean colorBlanc) {
+        return false;
+    }
+
     private boolean esMovimentValidPerPeça(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
-        // Regles específiques per a cada tipus de peça
+        char tipusPeça = Character.toUpperCase(peça);
+    
+        switch (tipusPeça) {
+            case 'P': return esMovimentValidPeo(peça, filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'T': return esMovimentValidTorre(filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'C': return esMovimentValidCavall(filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'A': return esMovimentValidAlfil(filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'Q': return esMovimentValidReina(filaOrigen, colOrigen, filaDesti, colDesti);
+            case 'K': return esMovimentValidRei(filaOrigen, colOrigen, filaDesti, colDesti);
+            default: return false;
+        }
+    }
+
+    // PEÓ
+    private boolean esMovimentValidPeo(char peo, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        boolean esBlanc = Character.isUpperCase(peo);
+        int direccio = esBlanc ? -1 : 1; // Blanques -1, negres +1
+        int filaInicial = esBlanc ? 6 : 1;
+    
+        // Moviment endavant una casella
+        if (colOrigen == colDesti && filaDesti == filaOrigen + direccio) {
+            if (tauler[filaDesti][colDesti] == BUIT) {
+                return true;
+            }
+        }
+    
+        // Moviment endavant dues caselles des de la posició inicial
+        if (colOrigen == colDesti && filaOrigen == filaInicial && filaDesti == filaOrigen + (2 * direccio)) {
+            if (tauler[filaDesti][colDesti] == BUIT && tauler[filaOrigen + direccio][colOrigen] == BUIT) {
+                return true;
+            }
+        }
+    
+        // Captura en diagonal
+        if (Math.abs(colDesti - colOrigen) == 1 && filaDesti == filaOrigen + direccio) {
+            if (tauler[filaDesti][colDesti] != BUIT) {
+                // Hi ha una peça enemiga
+                return true;
+            }
+        }
+    
+        System.out.println("Moviment no vàlid per al peó");
+        return false;
+    }
+
+    // TORRE
+    private boolean esMovimentValidTorre(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        // La torre es mou només horitzontalment o verticalment
+        if (filaOrigen != filaDesti && colOrigen != colDesti) {
+            System.out.println("La torre només es pot moure horitzontalment o verticalment");
+            return false;
+        }
+    
+        // Comprovar que no hi hagi cap peça al camí
+        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti)) {
+            System.out.println("Hi ha peces bloquejant el camí de la torre");
+            return false;
+        }
+
         return true;
     }
 
-    private boolean estaReiEnEscac(boolean blanc) {
-        // Comprovar si el rei està en escac
+    // CAVALL
+    private boolean esMovimentValidCavall(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        int deltaFila = Math.abs(filaDesti - filaOrigen);
+        int deltaCol = Math.abs(colDesti - colOrigen);
+    
+        // El cavall es mou en forma de "L": 2 caselles en una direcció i 1 en l'altra
+        if ((deltaFila == 2 && deltaCol == 1) || (deltaFila == 1 && deltaCol == 2)) {
+            return true;
+        }
+    
+        System.out.println("Moviment no vàlid per al cavall (ha de moure's en forma de L)");
         return false;
+    }
+
+    // ALFIL
+    private boolean esMovimentValidAlfil(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        int deltaFila = Math.abs(filaDesti - filaOrigen);
+        int deltaCol = Math.abs(colDesti - colOrigen);
+    
+        // L'alfil es mou només en diagonal
+        if (deltaFila != deltaCol) {
+            System.out.println("L'alfil només es pot moure en diagonal");
+            return false;
+        }
+    
+        // Comprovar que no hi hagi cap peça al camí
+        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti)) {
+            System.out.println("Hi ha peces bloquejant el camí de l'alfil");
+            return false;
+        }
+    
+        return true;
+    }
+
+    // REINA
+    private boolean esMovimentValidReina(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        // La reina es mou com una torre o com un alfil
+        int deltaFila = Math.abs(filaDesti - filaOrigen);
+        int deltaCol = Math.abs(colDesti - colOrigen);
+    
+        // Moviment de torre (horitzontal o vertical)
+        boolean movimentTorre = (filaOrigen == filaDesti || colOrigen == colDesti);
+    
+        // Moviment d'alfil (diagonal)
+        boolean movimentAlfil = (deltaFila == deltaCol);
+    
+        if (!movimentTorre && !movimentAlfil) {
+            System.out.println("La reina es pot moure horitzontalment, verticalment o en diagonal");
+            return false;
+        }
+
+        // Comprovar que no hi hagi cap peça al camí
+        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti)) {
+            System.out.println("Hi ha peces bloquejant el camí de la reina");
+            return false;
+        }
+    
+        return true;
+    }
+
+    // REI
+    private boolean esMovimentValidRei(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        int deltaFila = Math.abs(filaDesti - filaOrigen);
+        int deltaCol = Math.abs(colDesti - colOrigen);
+    
+        // El rei es mou una casella en qualsevol direcció
+        if (deltaFila <= 1 && deltaCol <= 1) {
+            return true;
+        }
+    
+        System.out.println("El rei només es pot moure una casella en qualsevol direcció");
+        return false;
+    }
+
+    // Comprova que no hi ha cap peça bloquejant el camí entre origen i destí
+    private boolean camiLliure(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+        int deltaFila = Integer.compare(filaDesti - filaOrigen, 0);
+        int deltaCol = Integer.compare(colDesti - colOrigen, 0);
+    
+        int filaActual = filaOrigen + deltaFila;
+        int colActual = colOrigen + deltaCol;
+    
+        // Recórrer el camí fins arribar al destí (sense incloure'l)
+        while (filaActual != filaDesti || colActual != colDesti) {
+            if (tauler[filaActual][colActual] != BUIT) {
+                return false; // Hi ha una peça bloquejant
+            }
+            filaActual += deltaFila;
+            colActual += deltaCol;
+        }
+    
+        return true;
     }
 
     private void finalitzarJoc() {
@@ -396,5 +547,4 @@ public class Escacs {
             scanner.close();
         }
     }
-
 }
