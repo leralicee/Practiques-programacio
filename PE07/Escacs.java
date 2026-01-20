@@ -603,8 +603,10 @@ public class Escacs {
         }
 
         // Comprovar que no hi hagi cap peça al camí
-        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti) && mostrarErrors) {
-            System.out.println("Hi ha peces bloquejant el camí de la torre");
+        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti)) {
+            if (mostrarErrors) {
+                System.out.println("Hi ha peces bloquejant el camí de la torre");
+            }
             return false;
         }
 
@@ -635,10 +637,12 @@ public class Escacs {
         }
 
         // Comprovar que no hi hagi cap peça al camí
-        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti) && mostrarErrors) {
-            System.out.println("Hi ha peces bloquejant el camí de l'alfil");
+        if (filaOrigen != filaDesti && colOrigen != colDesti) {
+            if (mostrarErrors) {
+                System.out.println("La torre només es pot moure horitzontalment o verticalment");
+            }
             return false;
-        }
+        }   
 
         return true;
     }
@@ -660,8 +664,10 @@ public class Escacs {
         }
 
         // Comprovar que no hi hagi cap peça al camí
-        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti) && mostrarErrors) {
-            System.out.println("Hi ha peces bloquejant el camí de la reina");
+        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti)) {
+            if (mostrarErrors) {
+                System.out.println("Hi ha peces bloquejant el camí de la reina");
+            }
             return false;
         }
 
