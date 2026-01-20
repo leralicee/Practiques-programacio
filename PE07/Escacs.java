@@ -598,7 +598,9 @@ public class Escacs {
     private boolean esMovimentValidTorre(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
         // La torre es mou només horitzontalment o verticalment
         if (filaOrigen != filaDesti && colOrigen != colDesti) {
+            if (mostrarErrors) {
             System.out.println("La torre només es pot moure horitzontalment o verticalment");
+            }
             return false;
         }
 
