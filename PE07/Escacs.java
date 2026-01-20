@@ -155,50 +155,60 @@ public class Escacs {
 
     private void mostrarTauler() {
         System.out.println();
-
-        // Mostrar coordenades de columnes (a-h)
-        System.out.print("  ");
-        for (char columna = 'a'; columna <= 'h'; columna++) {
-            System.out.print(columna + " ");
-        }
-        System.out.println();
-
+    
+        System.out.println("    ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
+    
         for (int i = 0; i < MIDA_TAULER; i++) {
-            // Mostrar número de fila (1-8)
-            System.out.print((i + 1) + " ");
-
-            // Mostrar contingut de cada casella
+            System.out.print("  " + (i + 1) + " ║");
+        
             for (int j = 0; j < MIDA_TAULER; j++) {
-                System.out.print(tauler[i][j] + " ");
+                char peça = tauler[i][j];
+            
+                if (peça == BUIT) {
+                    if ((i + j) % 2 == 0) {
+                        System.out.print(" ░ ");
+                    } else {
+                        System.out.print("   ");
+                    }
+                } else {
+                    System.out.print(" " + peça + " ");
+                }
+            
+                System.out.print("║");
             }
-
+        
             System.out.println();
+        
+            if (i < MIDA_TAULER - 1) {
+                System.out.println("    ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
+            } else {
+                System.out.println("    ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
+            }
         }
-
-        System.out.println();
+    
+        System.out.print("      ");
+        for (char columna = 'a'; columna <= 'h'; columna++) {
+            System.out.print(columna + "   ");
+        }
+        System.out.println("\n");
     }
 
     private void mostrarPecesCapturades() {
-        System.out.print("Peces capturades per " + jugadorBlanques + ": ");
-        if (pecesCapturadesBlanques.isEmpty()) {
-            System.out.print("Cap");
-        } else {
+        if (!pecesCapturadesBlanques.isEmpty()) {
+            System.out.print("Peces capturades per " + jugadorBlanques + ": ");
             for (char peça : pecesCapturadesBlanques) {
                 System.out.print(peça + " ");
             }
+            System.out.println();
         }
 
-        System.out.println();
-
-        System.out.print("Peces capturades per " + jugadorNegres + ": ");
-        if (pecesCapturadesNegres.isEmpty()) {
-            System.out.print("Cap");
-        } else {
+        if (!pecesCapturadesNegres.isEmpty()) {
+            System.out.print("Peces capturades per " + jugadorNegres + ": ");
             for (char peça : pecesCapturadesNegres) {
                 System.out.print(peça + " ");
             }
+            System.out.println();
         }
-        System.out.println();
     }
 
     private void mostrarHistorialMoviments() {
@@ -223,8 +233,7 @@ public class Escacs {
 
     private void bucleJoc() {
         while (jocEnCurs) {
-            if (comprovarEstatPartida())
-                return;
+            if (comprovarEstatPartida()) return;
 
             mostrarTorn();
             String moviment = demanarMoviment();
@@ -265,9 +274,9 @@ public class Escacs {
         mostrarPecesCapturades();
 
         if (tornBlanques) {
-            System.out.println("Torn de " + jugadorBlanques + " (BLANQUES)");
+            System.out.println("Torn de " + jugadorBlanques + " (BLANQUES)\n");
         } else {
-            System.out.println("Torn de " + jugadorNegres + " (NEGRES)");
+            System.out.println("Torn de " + jugadorNegres + " (NEGRES)\n");
         }
     }
 
@@ -415,7 +424,7 @@ public class Escacs {
 
         char peça = tauler[filaOrigen][colOrigen];
 
-        if (!esMovimentValidPerPeça(peça, filaOrigen, colOrigen, filaDesti, colDesti))
+        if (!esMovimentValidPerPeça(peça, filaOrigen, colOrigen, filaDesti, colDesti, true))
             return false;
 
         if (!validarEscacDesprésMoviment(peça, filaOrigen, colOrigen, filaDesti, colDesti))
@@ -534,28 +543,28 @@ public class Escacs {
 
     // REGLES DE PECES
 
-    private boolean esMovimentValidPerPeça(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+    private boolean esMovimentValidPerPeça(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
         char tipusPeça = Character.toUpperCase(peça);
 
         switch (tipusPeça) {
             case 'P':
-                return esMovimentValidPeo(peça, filaOrigen, colOrigen, filaDesti, colDesti);
+                return esMovimentValidPeo(peça, filaOrigen, colOrigen, filaDesti, colDesti, mostrarErrors);
             case 'T':
-                return esMovimentValidTorre(filaOrigen, colOrigen, filaDesti, colDesti);
+                return esMovimentValidTorre(filaOrigen, colOrigen, filaDesti, colDesti, mostrarErrors);
             case 'C':
-                return esMovimentValidCavall(filaOrigen, colOrigen, filaDesti, colDesti);
+                return esMovimentValidCavall(filaOrigen, colOrigen, filaDesti, colDesti, mostrarErrors);
             case 'A':
-                return esMovimentValidAlfil(filaOrigen, colOrigen, filaDesti, colDesti);
+                return esMovimentValidAlfil(filaOrigen, colOrigen, filaDesti, colDesti, mostrarErrors);
             case 'Q':
-                return esMovimentValidReina(filaOrigen, colOrigen, filaDesti, colDesti);
+                return esMovimentValidReina(filaOrigen, colOrigen, filaDesti, colDesti, mostrarErrors);
             case 'K':
-                return esMovimentValidRei(filaOrigen, colOrigen, filaDesti, colDesti);
+                return esMovimentValidRei(filaOrigen, colOrigen, filaDesti, colDesti, mostrarErrors);
             default:
                 return false;
         }
     }
 
-    private boolean esMovimentValidPeo(char peo, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+    private boolean esMovimentValidPeo(char peo, int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
         boolean esBlanc = Character.isUpperCase(peo);
         int direccio = esBlanc ? -1 : 1; // Blanques -1, negres +1
         int filaInicial = esBlanc ? 6 : 1;
@@ -582,11 +591,11 @@ public class Escacs {
             }
         }
 
-        System.out.println("Moviment no vàlid per al peó");
+        if (mostrarErrors) System.out.println("Moviment no vàlid per al peó");
         return false;
     }
 
-    private boolean esMovimentValidTorre(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+    private boolean esMovimentValidTorre(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
         // La torre es mou només horitzontalment o verticalment
         if (filaOrigen != filaDesti && colOrigen != colDesti) {
             System.out.println("La torre només es pot moure horitzontalment o verticalment");
@@ -594,7 +603,7 @@ public class Escacs {
         }
 
         // Comprovar que no hi hagi cap peça al camí
-        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti)) {
+        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti) && mostrarErrors) {
             System.out.println("Hi ha peces bloquejant el camí de la torre");
             return false;
         }
@@ -602,7 +611,7 @@ public class Escacs {
         return true;
     }
 
-    private boolean esMovimentValidCavall(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+    private boolean esMovimentValidCavall(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
         int deltaFila = Math.abs(filaDesti - filaOrigen);
         int deltaCol = Math.abs(colDesti - colOrigen);
 
@@ -611,11 +620,11 @@ public class Escacs {
             return true;
         }
 
-        System.out.println("Moviment no vàlid per al cavall (ha de moure's en forma de L)");
+        if (mostrarErrors) System.out.println("Moviment no vàlid per al cavall (ha de moure's en forma de L)");
         return false;
     }
 
-    private boolean esMovimentValidAlfil(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+    private boolean esMovimentValidAlfil(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
         int deltaFila = Math.abs(filaDesti - filaOrigen);
         int deltaCol = Math.abs(colDesti - colOrigen);
 
@@ -626,7 +635,7 @@ public class Escacs {
         }
 
         // Comprovar que no hi hagi cap peça al camí
-        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti)) {
+        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti) && mostrarErrors) {
             System.out.println("Hi ha peces bloquejant el camí de l'alfil");
             return false;
         }
@@ -634,7 +643,7 @@ public class Escacs {
         return true;
     }
 
-    private boolean esMovimentValidReina(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+    private boolean esMovimentValidReina(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
         // La reina es mou com una torre o com un alfil
         int deltaFila = Math.abs(filaDesti - filaOrigen);
         int deltaCol = Math.abs(colDesti - colOrigen);
@@ -651,7 +660,7 @@ public class Escacs {
         }
 
         // Comprovar que no hi hagi cap peça al camí
-        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti)) {
+        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti) && mostrarErrors) {
             System.out.println("Hi ha peces bloquejant el camí de la reina");
             return false;
         }
@@ -659,7 +668,7 @@ public class Escacs {
         return true;
     }
 
-    private boolean esMovimentValidRei(int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
+    private boolean esMovimentValidRei(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
         int deltaFila = Math.abs(filaDesti - filaOrigen);
         int deltaCol = Math.abs(colDesti - colOrigen);
 
@@ -668,7 +677,7 @@ public class Escacs {
             return true;
         }
 
-        System.out.println("El rei només es pot moure una casella en qualsevol direcció");
+        if (mostrarErrors) System.out.println("El rei només es pot moure una casella en qualsevol direcció");
         return false;
     }
 
@@ -1020,7 +1029,7 @@ public class Escacs {
                                 continue;
                         }
 
-                        if (!esMovimentValidPerPeça(peça, filaOrigen, colOrigen, filaDesti, colDesti))
+                        if (!esMovimentValidPerPeça(peça, filaOrigen, colOrigen, filaDesti, colDesti, false))
                             continue;
 
                         char peçaCapturada = tauler[filaDesti][colDesti];
