@@ -47,9 +47,7 @@ public class Escacs {
     private static final int FILA_PECES_NEGRES = 0;
     private static final int FILA_PECES_BLANQUES = 7;
 
-    /* Constants per enrocs
-       A IMPLEMENTAR
-
+    // Constants per enrocs
     private static final int COLUMNA_REI_INICIAL = 4;
     private static final int COLUMNA_TORRE_DAMA = 0;
     private static final int COLUMNA_TORRE_REI = 7;
@@ -57,8 +55,7 @@ public class Escacs {
     private static final int COLUMNA_REI_ENROC_LLARG = 2;
     private static final int COLUMNA_TORRE_ENROC_CURT = 5;
     private static final int COLUMNA_TORRE_ENROC_LLARG = 3;
-    
-    */
+
 
     // CONSTRUCTOR I MAIN
 
@@ -817,22 +814,23 @@ public class Escacs {
 
     private boolean esIntentEnroc(String origen, String desti) {
         if (tornBlanques) {
-            return (origen.equals("d8") && (desti.equals("f8") || desti.equals("b8")));
+            return origen.equals("e8") && (desti.equals("g8") || desti.equals("c8"));
         } else {
-            return (origen.equals("d1") && (desti.equals("f1") || desti.equals("b1")));
+            return origen.equals("e1") && (desti.equals("g1") || desti.equals("c1"));
         }
     }
 
     private boolean validarIExecutarEnroc(String origen, String desti) {
         boolean esEnrocCurt = tornBlanques ? desti.equals("g8") : desti.equals("g1");
-
+    
         if (!validarCondicionsPreviesEnroc(esEnrocCurt)) return false;
-
+    
         int fila = tornBlanques ? 7 : 0;
-
+    
         if (!validarCamiEnroc(fila, esEnrocCurt)) return false;
-
+    
         executarEnroc(fila, esEnrocCurt);
+
         return true;
     }
 
@@ -896,27 +894,31 @@ public class Escacs {
     }
 
     private boolean validarCamiEnroc(int fila, boolean esEnrocCurt) {
+        boolean colorAtacat = tornBlanques;
+        
         if (esEnrocCurt) {
-            if (tauler[fila][5] != BUIT || tauler[fila][6] != BUIT) {
+            if (tauler[fila][COLUMNA_TORRE_ENROC_CURT] != BUIT || tauler[fila][COLUMNA_REI_ENROC_CURT] != BUIT) {
                 System.out.println("No pots fer l'enroc curt: hi ha peces bloquejant el camí");
                 return false;
             }
-            boolean colorAtacat = (fila == 0); // true si negres, false si blanques
-            if (casellaBaixAtac(fila, 5, colorAtacat) || casellaBaixAtac(fila, 6, colorAtacat)) {
+
+            if (casellaBaixAtac(fila, COLUMNA_TORRE_ENROC_CURT, colorAtacat) || casellaBaixAtac(fila, COLUMNA_REI_ENROC_CURT, colorAtacat)) {
                 System.out.println("No pots fer l'enroc: el rei passaria per una casella amenaçada");
                 return false;
             }
+
         } else {
-            if (tauler[fila][3] != BUIT || tauler[fila][2] != BUIT || tauler[fila][1] != BUIT) {
+            if (tauler[fila][COLUMNA_TORRE_ENROC_LLARG] != BUIT || tauler[fila][COLUMNA_REI_ENROC_LLARG] != BUIT || tauler[fila][1] != BUIT) {
                 System.out.println("No pots fer l'enroc llarg: hi ha peces bloquejant el camí");
                 return false;
             }
-            boolean colorAtacat = (fila == 0);
-            if (casellaBaixAtac(fila, 3, colorAtacat) || casellaBaixAtac(fila, 2, colorAtacat)) {
+
+            if (casellaBaixAtac(fila, COLUMNA_TORRE_ENROC_LLARG, colorAtacat) || casellaBaixAtac(fila, COLUMNA_REI_ENROC_LLARG, colorAtacat)) {
                 System.out.println("No pots fer l'enroc: el rei passaria per una casella amenaçada");
                 return false;
             }
         }
+
         return true;
     }
 
@@ -925,16 +927,16 @@ public class Escacs {
         char torre = tornBlanques ? TORREBLANC : TORRENEGRE;
 
         if (esEnrocCurt) {
-            tauler[fila][4] = BUIT;
-            tauler[fila][6] = rei;
-            tauler[fila][7] = BUIT;
-            tauler[fila][5] = torre;
+            tauler[fila][COLUMNA_REI_INICIAL] = BUIT;
+            tauler[fila][COLUMNA_REI_ENROC_CURT] = rei;
+            tauler[fila][COLUMNA_TORRE_REI] = BUIT;
+            tauler[fila][COLUMNA_TORRE_ENROC_CURT] = torre;
             System.out.println("Enroc curt realitzat!");
         } else {
-            tauler[fila][4] = BUIT;
-            tauler[fila][2] = rei;
-            tauler[fila][0] = BUIT;
-            tauler[fila][3] = torre;
+            tauler[fila][COLUMNA_REI_INICIAL] = BUIT;
+            tauler[fila][COLUMNA_REI_ENROC_LLARG] = rei;
+            tauler[fila][COLUMNA_TORRE_DAMA] = BUIT;
+            tauler[fila][COLUMNA_TORRE_ENROC_LLARG] = torre;
             System.out.println("Enroc llarg realitzat!");
         }
 
