@@ -1,0 +1,207 @@
+@startuml
+title Validació d'un Moviment Il·legal - Joc d'Escacs
+
+actor "Jugador" as J
+participant "Escacs\n(bucleJoc)" as BJ
+participant "Escacs\n(demanarMoviment)" as DM
+participant "Escacs\n(processarMoviment)" as PM
+participant "Escacs\n(validarEntradaMoviment)" as VEM
+participant "Escacs\n(validarMoviment)" as VM
+participant "Escacs\n(validarPeçaOrigen)" as VPO
+participant "Escacs\n(validarPeçaDesti)" as VPD
+participant "Escacs\n(esMovimentValidPerPeça)" as EMVP
+participant "Escacs\n(validarEscacDesprésMoviment)" as VEDM
+participant "Escacs\n(tauler)" as T
+
+== Torn del Jugador ==
+
+activate BJ
+BJ -> BJ: mostrarTorn()
+note right: Mostra tauler\ni peces capturades
+
+BJ -> DM: demanarMoviment()
+activate DM
+
+DM -> J: "Introdueix moviment\n(ex: e2 e4) o 'exit':"
+activate J
+J --> DM: entrada (ex: "e2 h7")
+deactivate J
+
+DM --> BJ: moviment = "e2 h7"
+deactivate DM
+
+BJ -> PM: processarMoviment(moviment)
+activate PM
+
+== Validació de Format ==
+
+PM -> VEM: validarEntradaMoviment(moviment)
+activate VEM
+
+VEM -> VEM: split("\\s+")
+note right: Separa origen i destí
+
+alt Format incorrecte (no té 2 parts)
+    VEM --> J: "Format incorrecte.\nUsa: origen destí (ex: e2 e4)"
+    VEM --> PM: false
+    PM --> BJ: return
+    note right: NO modifica tauler\nTorna a demanar moviment
+    BJ -> DM: demanarMoviment()
+    note right: **Bucle:** Torna a començar
+end
+
+alt Coordenades invàlides (no 2 caràcters)
+    VEM --> J: "Coordenades invàlides.\nCada posició: lletra(a-h) + número(1-8)"
+    VEM --> PM: false
+    PM --> BJ: return
+    BJ -> DM: demanarMoviment()
+end
+
+alt Columna fora de rang (no a-h)
+    VEM --> J: "Columna invàlida.\nHa de ser entre 'a' i 'h'"
+    VEM --> PM: false
+    PM --> BJ: return
+    BJ -> DM: demanarMoviment()
+end
+
+alt Fila fora de rang (no 1-8)
+    VEM --> J: "Fila invàlida.\nHa de ser entre '1' i '8'"
+    VEM --> PM: false
+    PM --> BJ: return
+    BJ -> DM: demanarMoviment()
+end
+
+alt Origen i destí iguals
+    VEM --> J: "L'origen i el destí\nno poden ser la mateixa casella"
+    VEM --> PM: false
+    PM --> BJ: return
+    BJ -> DM: demanarMoviment()
+end
+
+VEM -> VEM: parsejarCoordenada()
+note right: Converteix "e2" a [6,4]
+
+VEM --> PM: true (format vàlid)
+deactivate VEM
+
+== Validació de Moviment ==
+
+PM -> VM: validarMoviment(moviment)
+activate VM
+
+VM -> T: tauler[filaOrigen][colOrigen]
+activate T
+T --> VM: peça
+deactivate T
+
+VM -> VPO: validarPeçaOrigen(filaOrigen, colOrigen)
+activate VPO
+
+alt Casella origen buida
+    VPO --> J: "No hi ha cap peça\na la casella origen"
+    VPO --> VM: false
+    VM --> PM: false
+    PM --> BJ: return
+    note right: **NO modifica tauler**
+    BJ -> DM: demanarMoviment()
+end
+
+alt Peça no correspon al jugador actual
+    VPO --> J: "Aquesta peça no és del\nteu color. És el torn de [color]"
+    VPO --> VM: false
+    VM --> PM: false
+    PM --> BJ: return
+    BJ -> DM: demanarMoviment()
+end
+
+VPO --> VM: true
+deactivate VPO
+
+VM -> VPD: validarPeçaDesti(origen, destí)
+activate VPD
+
+alt Destí té peça pròpia
+    VPD --> J: "No pots capturar\nuna peça pròpia"
+    VPD --> VM: false
+    VM --> PM: false
+    PM --> BJ: return
+    BJ -> DM: demanarMoviment()
+end
+
+VPD --> VM: true
+deactivate VPD
+
+VM -> EMVP: esMovimentValidPerPeça(peça, origen, destí)
+activate EMVP
+
+EMVP -> EMVP: switch(peça)
+note right: Delega a mètode específic:\n- esMovimentValidPeo()\n- esMovimentValidTorre()\n- esMovimentValidCavall()\netc.
+
+alt Moviment invàlid per la peça
+    EMVP --> J: "Moviment invàlid per\naquesta peça segons les regles"
+    EMVP --> VM: false
+    VM --> PM: false
+    PM --> BJ: return
+    BJ -> DM: demanarMoviment()
+end
+
+EMVP --> VM: true
+deactivate EMVP
+
+VM -> VEDM: validarEscacDesprésMoviment(peça, origen, destí)
+activate VEDM
+
+VEDM -> T: **SIMULAR:** tauler[destí] = peça\ntauler[origen] = '.'
+activate T
+note right: Prova temporal del moviment
+
+VEDM -> VEDM: estaReiEnEscac(colorActual)
+note right: Comprova si el rei\npropi està amenaçat
+
+T --> VEDM: estat simulat
+deactivate T
+
+VEDM -> T: **DESFER:** Restaura estat original
+activate T
+T --> VEDM: tauler restaurat
+deactivate T
+
+alt Moviment deixa el rei en escac
+    VEDM --> J: "Aquest moviment deixaria\nel teu rei en escac"
+    VEDM --> VM: false
+    VM --> PM: false
+    PM --> BJ: return
+    note right: **NO modifica tauler**
+    BJ -> DM: demanarMoviment()
+end
+
+VEDM --> VM: true (moviment vàlid)
+deactivate VEDM
+
+VM -> VM: executarMoviment(peça, origen, destí)
+note right: **Moviment VÀLID**\nEs modifica el tauler
+
+VM --> PM: true
+deactivate VM
+
+PM -> PM: historialMoviments.add(moviment)
+PM -> PM: tornBlanques = !tornBlanques
+note right: Canvia el torn
+
+PM --> BJ: return
+deactivate PM
+
+BJ -> BJ: comprovarEstatPartida()
+note right: Comprova escac/escac i mat\ndel següent jugador
+
+deactivate BJ
+
+note over J, T
+**Clau del disseny:**
+1. El tauler NO es modifica mai si hi ha error
+2. Cada validació mostra un missatge específic
+3. El bucle continua fins moviment vàlid
+4. La simulació garanteix que el rei no quedi en escac
+end note
+
+@enduml

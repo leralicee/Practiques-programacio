@@ -1,0 +1,141 @@
+graph TD
+    Start([INICI DEL JOC]) --> Init[Constructor Escacs<br/>- Inicialitza tauler<br/>- Inicialitza variables<br/>- tornBlanques = true]
+    Init --> Main[main: Crea instància<br/>i crida iniciar]
+    Main --> DemanarNoms{demanarJugadors<br/>= true?}
+    
+    DemanarNoms -->|Sí| NomsBlanques[Demanar nom jugador blanques]
+    NomsBlanques --> NomsNegres[Demanar nom jugador negres]
+    NomsNegres --> ComprovarNoms{Noms<br/>diferents?}
+    ComprovarNoms -->|No| NomsBlanques
+    ComprovarNoms -->|Sí| InicialitzarTauler
+    
+    DemanarNoms -->|No| InicialitzarTauler[inicialitzarTauler<br/>- Posiciona peces<br/>- Blanques files 7-8<br/>- Negres files 1-2]
+    
+    InicialitzarTauler --> BucleJoc[bucleJoc]
+    
+    BucleJoc --> MostrarTauler[Mostrar tauler gràfic]
+    MostrarTauler --> MostrarCaptures[Mostrar peces capturades]
+    MostrarCaptures --> TornActual[Indicar torn actual]
+    
+    TornActual --> Menu[Mostrar menú opcions:<br/>1.Moviment 2.Historial<br/>3.Regles 4.Rendir-se]
+    
+    Menu --> SeleccioOpcio{Opció<br/>seleccionada}
+    
+    SeleccioOpcio -->|1| DemanarMoviment[Demanar origen i destí<br/>parsejarCoordenada]
+    SeleccioOpcio -->|2| MostrarHistorial[mostrarHistorialMoviments]
+    SeleccioOpcio -->|3| MostrarRegles[mostrarReglesEscacs]
+    SeleccioOpcio -->|4| ConfirmarRendir{Confirmar<br/>rendició?}
+    
+    MostrarHistorial --> Menu
+    MostrarRegles --> Menu
+    
+    ConfirmarRendir -->|Sí| FinalitzarJoc
+    ConfirmarRendir -->|No| Menu
+    
+    DemanarMoviment --> ValidarEntrada{Coordenades<br/>vàlides?}
+    ValidarEntrada -->|No| DemanarMoviment
+    
+    ValidarEntrada -->|Sí| ValidarPeca{És peça del<br/>jugador actual?}
+    ValidarPeca -->|No| ErrorPeca[Mostrar error]
+    ErrorPeca --> DemanarMoviment
+    
+    ValidarPeca -->|Sí| ValidarMoviment[esMovimentValid<br/>esMovimentValidPerPeça]
+    
+    ValidarMoviment --> TipusPeca{Tipus de<br/>peça?}
+    
+    TipusPeca -->|Peó| ValidarPeo[esMovimentValidPeo<br/>- Avanç 1 o 2<br/>- Captura diagonal]
+    TipusPeca -->|Torre| ValidarTorre[esMovimentValidTorre<br/>- Línia recta<br/>- camiLliure]
+    TipusPeca -->|Cavall| ValidarCavall[esMovimentValidCavall<br/>- Moviment en L]
+    TipusPeca -->|Alfil| ValidarAlfil[esMovimentValidAlfil<br/>- Diagonal<br/>- camiLliure]
+    TipusPeca -->|Reina| ValidarReina[esMovimentValidReina<br/>- Torre + Alfil<br/>- camiLliure]
+    TipusPeca -->|Rei| ValidarRei[esMovimentValidRei<br/>- 1 casella<br/>- o enroc]
+    
+    ValidarPeo --> MovimentValid
+    ValidarTorre --> MovimentValid
+    ValidarCavall --> MovimentValid
+    ValidarAlfil --> MovimentValid
+    ValidarReina --> MovimentValid
+    ValidarRei --> MovimentValid
+    
+    MovimentValid{Moviment<br/>vàlid?}
+    MovimentValid -->|No| ErrorMoviment[Mostrar error]
+    ErrorMoviment --> DemanarMoviment
+    
+    MovimentValid -->|Sí| SimularMoviment[Simular moviment al tauler]
+    SimularMoviment --> ComprovarEscac{estaReiEnEscac<br/>propi?}
+    
+    ComprovarEscac -->|Sí| DesferSimulacio1[Desfer simulació]
+    DesferSimulacio1 --> ErrorEscac[Error: moviment<br/>deixa rei en escac]
+    ErrorEscac --> DemanarMoviment
+    
+    ComprovarEscac -->|No| DesferSimulacio2[Desfer simulació]
+    DesferSimulacio2 --> ExecutarMoviment[executarMoviment<br/>- Captura peces<br/>- Promoció peó<br/>- Enroc]
+    
+    ExecutarMoviment --> EsEnroc{És<br/>enroc?}
+    EsEnroc -->|Sí| ValidarEnroc[esEnrocValid<br/>- Rei no mogut<br/>- Torre no moguda<br/>- Rei no en escac<br/>- Camí lliure<br/>- Caselles no atacades]
+    ValidarEnroc --> ExecutarEnroc[executarEnroc<br/>Moure rei i torre]
+    ExecutarEnroc --> MarcarEnroc[marcarPecesEnrocMogudes]
+    MarcarEnroc --> AfegirHistorial
+    
+    EsEnroc -->|No| EsPromocio{Peó arriba<br/>última fila?}
+    EsPromocio -->|Sí| DemanarPromocio[demanarPromocio<br/>Q/T/A/C]
+    DemanarPromocio --> Promocionar[Canviar peó per<br/>peça escollida]
+    Promocionar --> AfegirHistorial
+    
+    EsPromocio -->|No| EsCaptura{Hi ha<br/>captura?}
+    EsCaptura -->|Sí| Capturar[Afegir peça a llista<br/>de captures del jugador]
+    Capturar --> AfegirHistorial
+    
+    EsCaptura -->|No| AfegirHistorial[Afegir moviment<br/>a historialMoviments]
+    
+    AfegirHistorial --> ActualitzarTauler[Actualitzar posicions<br/>al tauler]
+    ActualitzarTauler --> MarcarPeces[Marcar rei/torres<br/>com a moguts]
+    MarcarPeces --> CanviarTorn[Canviar torn:<br/>tornBlanques = !tornBlanques]
+    
+    CanviarTorn --> ComprovarEstat[comprovarEstatPartida]
+    
+    ComprovarEstat --> ReiEnEscac{estaReiEnEscac<br/>jugador actual?}
+    
+    ReiEnEscac -->|Sí| MostrarEscac[Mostrar ESCAC!]
+    MostrarEscac --> TeMoviments1{teMovimentsLegals?}
+    
+    ReiEnEscac -->|No| TeMoviments2{teMovimentsLegals?}
+    
+    TeMoviments1 -->|Sí| ContinuarJoc[Continuar joc]
+    TeMoviments1 -->|No| EscacMat[ESCAC I MAT!<br/>guanyador = jugador anterior]
+    
+    TeMoviments2 -->|Sí| ContinuarJoc
+    TeMoviments2 -->|No| Taules[REI BLOQUEJAT<br/>TAULES!]
+    
+    ContinuarJoc --> JocEnCurs{jocEnCurs<br/>= true?}
+    JocEnCurs -->|Sí| BucleJoc
+    
+    EscacMat --> FinalitzarJoc[finalitzarJoc]
+    Taules --> FinalitzarJoc
+    
+    JocEnCurs -->|No| FinalitzarJoc
+    
+    FinalitzarJoc --> MostrarResultat[Mostrar guanyador<br/>o taules]
+    MostrarResultat --> MostrarHistorialFinal[Mostrar historial<br/>complert]
+    MostrarHistorialFinal --> MostrarCapturesFinal[Mostrar resum<br/>de captures]
+    
+    MostrarCapturesFinal --> TornarJugar{Tornar a<br/>jugar?}
+    
+    TornarJugar -->|No| Sortir([FI DEL PROGRAMA])
+    
+    TornarJugar -->|Sí| MantenirJugadors{Mantenir<br/>jugadors?}
+    
+    MantenirJugadors -->|Sí| IntercanviarJugadors[Intercanviar colors<br/>si hi ha guanyador]
+    IntercanviarJugadors --> ResetPartida
+    
+    MantenirJugadors -->|No| ResetPartida[Reset variables:<br/>- jocEnCurs = true<br/>- tornBlanques = true<br/>- Netejar historial<br/>- Netejar captures<br/>- Reset enrocs]
+    
+    ResetPartida --> DemanarNoms
+    
+    style Start fill:#90EE90
+    style Sortir fill:#FFB6C1
+    style EscacMat fill:#FF6B6B
+    style Taules fill:#FFD93D
+    style ExecutarMoviment fill:#87CEEB
+    style ComprovarEstat fill:#DDA0DD
+    style ValidarMoviment fill:#F0E68C

@@ -887,7 +887,7 @@ public class Escacs {
         boolean movimentAlfil = (deltaFila == deltaCol);
 
         if (!movimentTorre && !movimentAlfil) {
-            System.out.println("La reina es pot moure horitzontalment, verticalment o en diagonal");
+            if (mostrarErrors) System.out.println("La reina es pot moure horitzontalment, verticalment o en diagonal");
             return false;
         }
 
