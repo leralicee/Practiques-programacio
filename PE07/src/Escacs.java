@@ -56,7 +56,6 @@ public class Escacs {
     private static final int COLUMNA_TORRE_ENROC_CURT = 5;
     private static final int COLUMNA_TORRE_ENROC_LLARG = 3;
 
-
     // CONSTRUCTOR I MAIN
 
     public static void main(String[] args) {
@@ -80,7 +79,6 @@ public class Escacs {
         torreNegraA1Moguda = false;
         torreNegraH1Moguda = false;
     }
-
 
     // INICIALITZACIÓ
 
@@ -150,20 +148,19 @@ public class Escacs {
         tauler[FILA_PECES_BLANQUES][7] = TORREBLANC; // h8
     }
 
-
     // VISUALITZACIÓ
 
     private void mostrarTauler() {
         System.out.println();
-    
+
         System.out.println("    ╔═══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗");
-    
+
         for (int i = 0; i < MIDA_TAULER; i++) {
             System.out.print("  " + (i + 1) + " ║");
-        
+
             for (int j = 0; j < MIDA_TAULER; j++) {
                 char peça = tauler[i][j];
-            
+
                 if (peça == BUIT) {
                     if ((i + j) % 2 == 0) {
                         System.out.print(" ░ ");
@@ -173,19 +170,19 @@ public class Escacs {
                 } else {
                     System.out.print(" " + peça + " ");
                 }
-            
+
                 System.out.print("║");
             }
-        
+
             System.out.println();
-        
+
             if (i < MIDA_TAULER - 1) {
                 System.out.println("    ╠═══╬═══╬═══╬═══╬═══╬═══╬═══╬═══╣");
             } else {
                 System.out.println("    ╚═══╩═══╩═══╩═══╩═══╩═══╩═══╩═══╝");
             }
         }
-    
+
         System.out.print("      ");
         for (char columna = 'a'; columna <= 'h'; columna++) {
             System.out.print(columna + "   ");
@@ -228,12 +225,12 @@ public class Escacs {
         System.out.println();
     }
 
-
     // BUCLE PRINCIPAL
 
     private void bucleJoc() {
         while (jocEnCurs) {
-            if (comprovarEstatPartida()) return;
+            if (comprovarEstatPartida())
+                return;
 
             mostrarTorn();
             String moviment = demanarMoviment();
@@ -315,7 +312,6 @@ public class Escacs {
         historialMoviments.add(moviment);
         tornBlanques = !tornBlanques;
     }
-
 
     // VALIDACIÓ D'ENTRADA
 
@@ -399,7 +395,6 @@ public class Escacs {
             }
         } while (true);
     }
-
 
     // VALIDACIÓ DE MOVIMENTS
 
@@ -485,7 +480,6 @@ public class Escacs {
         return true;
     }
 
-
     // EXECUCIÓ DE MOVIMENTS
 
     private void executarMoviment(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti) {
@@ -540,10 +534,10 @@ public class Escacs {
         }
     }
 
-
     // REGLES DE PECES
 
-    private boolean esMovimentValidPerPeça(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
+    private boolean esMovimentValidPerPeça(char peça, int filaOrigen, int colOrigen, int filaDesti, int colDesti,
+            boolean mostrarErrors) {
         char tipusPeça = Character.toUpperCase(peça);
 
         switch (tipusPeça) {
@@ -564,7 +558,8 @@ public class Escacs {
         }
     }
 
-    private boolean esMovimentValidPeo(char peo, int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
+    private boolean esMovimentValidPeo(char peo, int filaOrigen, int colOrigen, int filaDesti, int colDesti,
+            boolean mostrarErrors) {
         boolean esBlanc = Character.isUpperCase(peo);
         int direccio = esBlanc ? -1 : 1; // Blanques -1, negres +1
         int filaInicial = esBlanc ? 6 : 1;
@@ -591,15 +586,17 @@ public class Escacs {
             }
         }
 
-        if (mostrarErrors) System.out.println("Moviment no vàlid per al peó");
+        if (mostrarErrors)
+            System.out.println("Moviment no vàlid per al peó");
         return false;
     }
 
-    private boolean esMovimentValidTorre(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
+    private boolean esMovimentValidTorre(int filaOrigen, int colOrigen, int filaDesti, int colDesti,
+            boolean mostrarErrors) {
         // La torre es mou només horitzontalment o verticalment
         if (filaOrigen != filaDesti && colOrigen != colDesti) {
             if (mostrarErrors) {
-            System.out.println("La torre només es pot moure horitzontalment o verticalment");
+                System.out.println("La torre només es pot moure horitzontalment o verticalment");
             }
             return false;
         }
@@ -615,7 +612,8 @@ public class Escacs {
         return true;
     }
 
-    private boolean esMovimentValidCavall(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
+    private boolean esMovimentValidCavall(int filaOrigen, int colOrigen, int filaDesti, int colDesti,
+            boolean mostrarErrors) {
         int deltaFila = Math.abs(filaDesti - filaOrigen);
         int deltaCol = Math.abs(colDesti - colOrigen);
 
@@ -624,32 +622,38 @@ public class Escacs {
             return true;
         }
 
-        if (mostrarErrors) System.out.println("Moviment no vàlid per al cavall (ha de moure's en forma de L)");
+        if (mostrarErrors)
+            System.out.println("Moviment no vàlid per al cavall (ha de moure's en forma de L)");
         return false;
     }
 
-    private boolean esMovimentValidAlfil(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
+    private boolean esMovimentValidAlfil(int filaOrigen, int colOrigen, int filaDesti, int colDesti,
+            boolean mostrarErrors) {
         int deltaFila = Math.abs(filaDesti - filaOrigen);
         int deltaCol = Math.abs(colDesti - colOrigen);
 
         // L'alfil es mou només en diagonal
         if (deltaFila != deltaCol) {
-            System.out.println("L'alfil només es pot moure en diagonal");
+            if (mostrarErrors) {
+                System.out.println("L'alfil només es pot moure en diagonal");
+            }
             return false;
         }
 
         // Comprovar que no hi hagi cap peça al camí
-        if (filaOrigen != filaDesti && colOrigen != colDesti) {
+        if (!camiLliure(filaOrigen, colOrigen, filaDesti, colDesti)) {
             if (mostrarErrors) {
-                System.out.println("La torre només es pot moure horitzontalment o verticalment");
+                System.out.println("Hi ha peces bloquejant el camí de l'alfil");
             }
             return false;
-        }   
+        }
 
         return true;
+
     }
 
-    private boolean esMovimentValidReina(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
+    private boolean esMovimentValidReina(int filaOrigen, int colOrigen, int filaDesti, int colDesti,
+            boolean mostrarErrors) {
         // La reina es mou com una torre o com un alfil
         int deltaFila = Math.abs(filaDesti - filaOrigen);
         int deltaCol = Math.abs(colDesti - colOrigen);
@@ -676,7 +680,8 @@ public class Escacs {
         return true;
     }
 
-    private boolean esMovimentValidRei(int filaOrigen, int colOrigen, int filaDesti, int colDesti, boolean mostrarErrors) {
+    private boolean esMovimentValidRei(int filaOrigen, int colOrigen, int filaDesti, int colDesti,
+            boolean mostrarErrors) {
         int deltaFila = Math.abs(filaDesti - filaOrigen);
         int deltaCol = Math.abs(colDesti - colOrigen);
 
@@ -685,10 +690,10 @@ public class Escacs {
             return true;
         }
 
-        if (mostrarErrors) System.out.println("El rei només es pot moure una casella en qualsevol direcció");
+        if (mostrarErrors)
+            System.out.println("El rei només es pot moure una casella en qualsevol direcció");
         return false;
     }
-
 
     // DETECCIÓ D'ATAC
 
@@ -772,7 +777,6 @@ public class Escacs {
         return deltaFila <= 1 && deltaCol <= 1;
     }
 
-
     // DETECCIÓ D'ESCAC I MAT
 
     private boolean estaReiEnEscac(boolean colorBlanc) {
@@ -826,7 +830,6 @@ public class Escacs {
         return !estaReiEnEscac(colorBlanc) && !teMovimentsLegals(colorBlanc);
     }
 
-
     // ENROCS
 
     private boolean esIntentEnroc(String origen, String desti) {
@@ -839,13 +842,15 @@ public class Escacs {
 
     private boolean validarIExecutarEnroc(String origen, String desti) {
         boolean esEnrocCurt = tornBlanques ? desti.equals("g8") : desti.equals("g1");
-    
-        if (!validarCondicionsPreviesEnroc(esEnrocCurt)) return false;
-    
+
+        if (!validarCondicionsPreviesEnroc(esEnrocCurt))
+            return false;
+
         int fila = tornBlanques ? 7 : 0;
-    
-        if (!validarCamiEnroc(fila, esEnrocCurt)) return false;
-    
+
+        if (!validarCamiEnroc(fila, esEnrocCurt))
+            return false;
+
         executarEnroc(fila, esEnrocCurt);
 
         return true;
@@ -912,25 +917,28 @@ public class Escacs {
 
     private boolean validarCamiEnroc(int fila, boolean esEnrocCurt) {
         boolean colorAtacat = tornBlanques;
-        
+
         if (esEnrocCurt) {
             if (tauler[fila][COLUMNA_TORRE_ENROC_CURT] != BUIT || tauler[fila][COLUMNA_REI_ENROC_CURT] != BUIT) {
                 System.out.println("No pots fer l'enroc curt: hi ha peces bloquejant el camí");
                 return false;
             }
 
-            if (casellaBaixAtac(fila, COLUMNA_TORRE_ENROC_CURT, colorAtacat) || casellaBaixAtac(fila, COLUMNA_REI_ENROC_CURT, colorAtacat)) {
+            if (casellaBaixAtac(fila, COLUMNA_TORRE_ENROC_CURT, colorAtacat)
+                    || casellaBaixAtac(fila, COLUMNA_REI_ENROC_CURT, colorAtacat)) {
                 System.out.println("No pots fer l'enroc: el rei passaria per una casella amenaçada");
                 return false;
             }
 
         } else {
-            if (tauler[fila][COLUMNA_TORRE_ENROC_LLARG] != BUIT || tauler[fila][COLUMNA_REI_ENROC_LLARG] != BUIT || tauler[fila][1] != BUIT) {
+            if (tauler[fila][COLUMNA_TORRE_ENROC_LLARG] != BUIT || tauler[fila][COLUMNA_REI_ENROC_LLARG] != BUIT
+                    || tauler[fila][1] != BUIT) {
                 System.out.println("No pots fer l'enroc llarg: hi ha peces bloquejant el camí");
                 return false;
             }
 
-            if (casellaBaixAtac(fila, COLUMNA_TORRE_ENROC_LLARG, colorAtacat) || casellaBaixAtac(fila, COLUMNA_REI_ENROC_LLARG, colorAtacat)) {
+            if (casellaBaixAtac(fila, COLUMNA_TORRE_ENROC_LLARG, colorAtacat)
+                    || casellaBaixAtac(fila, COLUMNA_REI_ENROC_LLARG, colorAtacat)) {
                 System.out.println("No pots fer l'enroc: el rei passaria per una casella amenaçada");
                 return false;
             }
@@ -972,8 +980,7 @@ public class Escacs {
         }
     }
 
-
-   //  UTILITATS
+    // UTILITATS
 
     private int[] parsejarCoordenada(String coord) {
         char columna = coord.charAt(0);
@@ -1095,7 +1102,6 @@ public class Escacs {
 
         return peçaEscollida;
     }
-
 
     // FI DE JOC
 
