@@ -371,16 +371,16 @@ Tots els mètodes públics i clau estan documentats amb Javadoc complet que incl
 
 ## 👥 Autors
 
-- **Assignatura:** MP0487 - Entorns de Desenvolupament
-- **Curs:** DAW1 / DAM1
-- **Professors:** Cristian González Delgado, Isabel Bosch Millastre
+- **Assignatura:** Programació i Entorns de Desenvolupament
+- **Curs:** DAM1
+- **Professors:** Carles Bonet, Cristian González Delgado, Isabel Bosch Millastre
 - **Data:** Gener 2026
 
 ---
 
 ## 📄 Llicència
 
-Aquest projecte és un exercici acadèmic desenvolupat per a l'assignatura d'Entorns de Desenvolupament.
+Aquest projecte és un exercici acadèmic desenvolupat per a l'assignatura de Programació i d'Entorns de Desenvolupament.
 
 ---
 
