@@ -166,7 +166,6 @@ projecte-escacs/
 │   ├── diagrama_flux.png                    # Imatge del diagrama de flux
 │   ├── diagrama_moviment_illegal.puml       # Diagrama UML Acció 4
 │   ├── diagrama_moviment_illegal.png        # Imatge del diagrama UML
-│   └── EXPLICACIO_DIAGRAMA.md               # Documentació detallada
 │
 ├── src/                                     # ⭐ Codi font
 │   ├── main/java/
@@ -182,6 +181,21 @@ projecte-escacs/
 ---
 
 ## 🎯 Decisions importants de disseny
+
+
+### Nota sobre l'arquitectura procedural
+
+Aquest projecte segueix una **arquitectura procedural** dins d'una única classe Java, tal com requereixen els requisits del mòdul de Programació (no es pot utilitzar POO avançada amb múltiples classes). La separació de responsabilitats s'aconsegueix mitjançant:
+
+- **Seccions lògiques** clarament delimitades amb comentaris (`// GESTIÓ DEL TAULER`, `// VALIDACIÓ`, etc.)
+- **Funcions específiques** amb responsabilitat única i noms descriptius
+- **Correspondència amb participants UML** (Acció 4):
+  - `bucleJoc()` → **GameController** (bucle principal / torns)
+  - `demanarMoviment()` + `parsejarCoordenada()` → **UIConsola** (entrada i missatges)
+  - `validarMoviment()` + `esMovimentValidPerPeça()` → **MoveValidator** (validació)
+  - `tauler[][]` + mètodes associats → **Board** (lectura estat tauler)
+
+---
 
 ### 1. **Representació del tauler**
 
@@ -363,17 +377,14 @@ Tots els mètodes públics i clau estan documentats amb Javadoc complet que incl
 - Valor de retorn
 - Casos especials i condicions d'error
 
-### Guies disponibles
-- [`docs/EXPLICACIO_DIAGRAMA.md`](docs/EXPLICACIO_DIAGRAMA.md) - Explicació detallada del diagrama UML
-- [`docs/GUIA_RAPIDA_ACCIO4.md`](docs/GUIA_RAPIDA_ACCIO4.md) - Guia d'implementació de l'Acció 4
 
 ---
 
 ## 👥 Autors
 
-- **Assignatura:** MP0487 - Entorns de Desenvolupament
-- **Curs:** DAW1 / DAM1
-- **Professors:** Cristian González Delgado, Isabel Bosch Millastre
+- **Assignatura:** Programació i Entorns de Desenvolupament
+- **Curs:** DAM1
+- **Professors:** Carles Bonet, Cristian González Delgado, Isabel Bosch Millastre
 - **Data:** Gener 2026
 
 ---
