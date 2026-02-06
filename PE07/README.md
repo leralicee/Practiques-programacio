@@ -391,7 +391,7 @@ Tots els mètodes públics i clau estan documentats amb Javadoc complet que incl
 
 ## 📄 Llicència
 
-Aquest projecte és un exercici acadèmic desenvolupat per a l'assignatura d'Entorns de Desenvolupament.
+Aquest projecte és un exercici acadèmic desenvolupat per a l'assignatura de Programació i d'Entorns de Desenvolupament.
 
 ---
 
